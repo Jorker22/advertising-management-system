@@ -1,0 +1,156 @@
+@import "../variables";
+
+$come: $primary-blue-soft;
+$come-border: $primary-blue;
+$late: #f0eaf6;
+$late-border: #7530a2;
+$absent: #fa998c;
+$absent-border: #e9523f;
+$default: white;
+$default-border: #bbbbbb;
+
+.student-status .card-tag {
+  width: 123px;
+  border-radius: 8px;
+  background-color: $default;
+  border: 1px solid $default-border;
+}
+
+.student-status .card-tag.come {
+  background-color: $come;
+  border: 1px solid $come-border;
+}
+
+.student-status .card-tag.late {
+  background-color: $late;
+  border: 1px solid $late-border;
+}
+
+.student-status .card-tag.absent {
+  background-color: $absent;
+  border: 1px solid $absent-border;
+}
+
+.check-card[max-width~="450px"] .card-title {
+  margin-bottom: 0;
+}
+
+.check-card[min-width~="450px"] .check-date {
+  line-height: 2;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 1.25rem;
+  left: 0;
+}
+
+.subcard-row {
+  padding: 0 7px;
+}
+
+.subcard-row > div {
+  padding: 0 8px;
+}
+
+.subcard-row-first .subcard {
+  min-height: 110px;
+}
+
+.subcard-row-first[max-width~="500px"] > div {
+  width: 50%;
+  max-width: 50%;
+  flex: 0 0 50%;
+}
+
+.subcard-row-first[max-width~="350px"] > div {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 0 100%;
+}
+
+.subcard {
+  background: $default;
+  border: 1px solid $default-border;
+}
+
+.subcard [class^="i-"] {
+  color: $primary-gray;
+}
+
+.subcard.subcard-primary {
+  border-color: $primary;
+}
+
+.subcard.subcard-primary [class^="i-"] {
+  color: $primary;
+  font-size: 40px;
+}
+
+.subcard.subcard-primary .content p {
+  width: 100%;
+}
+
+.subcard.subcard-primary .content p.total-student {
+  line-height: 1;
+}
+
+.subcard.come {
+  background-color: $come;
+  border-color: $come-border;
+}
+
+.subcard.late {
+  background-color: $late;
+  border-color: $late-border;
+}
+
+.subcard.absent {
+  background-color: $absent;
+  border-color: $absent-border;
+}
+
+.subcard-teacher {
+  height: 100%;
+}
+
+.subcard-teacher > .card-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subcard-teacher .card-body > div {
+  width: 100%;
+}
+
+.subcard-teacher .row[max-width~="300px"] .teacher {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 0 100%;
+  margin-bottom: 30px;
+}
+
+.subcard-teacher .avatar img {
+  height: 54px;
+  width: 54px;
+}
+
+.subcard-teacher .teacher-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subcard-teacher .checkin-btn[max-width~="170px"] span {
+  display: block;
+}
+
+.subcard-teacher .checkin-btn[min-width~="170px"] span:first-child {
+  position: relative;
+  top: -3px;
+}
+
+.subcard-teacher .checkin-card {
+  max-width: 200px;
+  margin: auto;
+}

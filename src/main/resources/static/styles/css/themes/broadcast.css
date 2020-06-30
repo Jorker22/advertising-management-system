@@ -1,0 +1,16 @@
+#myTab {
+    width:100%;
+}
+
+.nav-tabs .nav-item .nav-link {
+    border-top-left-radius: 20px!important;
+    border-top-right-radius: 20px;
+    border-bottom:2px solid #dde2e5!important;
+
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    border:2px solid#ff9800!important;
+    border-bottom:2px solid #dde2e5!important;
+
+}

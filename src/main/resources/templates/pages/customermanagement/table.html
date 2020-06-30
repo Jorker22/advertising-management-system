@@ -1,0 +1,16 @@
+<tbody>
+<tr role="row" class="odd" th:each="customer: ${customerList}">
+    <td style="text-align: left!important;" th:text="${customer.customerName}"></td>
+    </a>
+    <td style="text-align: left!important;" th:text="${customer.customerType}"></td>
+    <td class="sorting_1" style="text-align: left!important;" th:text="${customer.customerAddress}"></td>
+    <td th:text="${customer.qtyCampaigns}"></td>
+    <td th:text="${customer.registrationDate}"></td>
+    <td style="text-align: left!important;" th:text="${'฿' + customer.wage}"></td>
+    <td class=""><a class="nav-item-hold" th:href="@{${'/customers/' + customer.id}}" >Edit</a></td>
+    <div sec:authorize="hasAuthority('USER') || hasAuthority('MANAGER')">
+        <td class=""><a class="nav-item-hold"th:href="@{${'/customers/delete/' + customer.id}}">Delete</a></td>
+        <td class=""><a class="nav-item-hold"th:href="@{${'/customers/' + customer.id + '/campaigns'}}">Campaigns</a></td>
+    </div>
+</tr>
+</tbody>

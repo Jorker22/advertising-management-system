@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/styles/css/themes/timeline.css}" href="../static/styles/vendor/timeline.css">
+
+
+    <style>
+        .table-responsive input{
+            width: auto!important;
+            height: auto!important;
+        }
+        th{
+            line-height: normal;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content" onload="loadDoc()">
+<div class="app-admin-wrap" style="min-height: 1000px;">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main-content-wrap sidenav-open d-flex flex-column">
+        <div class="breadcrumb breadcrumb-collapse">
+        </div>
+        <div class="breadcrumb breadcrumb-collapse">
+            <h1>Users</h1>
+            <a th:href="@{/users/create}">
+                <button type="button" class="btn btn-primary btn-rounded m-1" style="color:black;">Create New</button>
+            </a>
+        </div>
+        <div style="margin-top:20px;" class="separator-breadcrumb border-top"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="font-weight-500 text-20">จัดการบัญชีผู้ใช้ได้ที่นี่</p>
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <div class="card text-left">
+                            <div class="card-body"><div class="table-responsive">
+                                <div id="zero_configuration_table_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6" style="padding: 10px 25px 0px;"><div class="dataTables_length" id="zero_configuration_table_length"><label>Show <select name="zero_configuration_table_length" aria-controls="zero_configuration_table" class="form-control form-control-sm" onchange="updateEntities(this.value)" ><option value="10">10</option><option value="25" >25</option><option value="50" >50</option><option value="100">100</option></select> entries</label></div></div><div class="col-sm-12 col-md-6" style="padding: 10px 25px 0px;"><div id="zero_configuration_table_filter" class="dataTables_filter"><label>ค้นหา:<input onchange="updateKeyword(this.value)" type="text" class="form-control form-control-sm" placeholder="" aria-controls="zero_configuration_table"></label></div></div></div><div class="row"><div class="col-sm-12"><table id="zero_configuration_table" class="display table table-striped table-bordered dataTable" style="width: 100%;" role="grid" aria-describedby="zero_configuration_table_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th class="sorting" onclick="updateSorting('name')" tabindex="0" aria-controls="zero_configuration_table" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 295px; padding: 25px; text-align: left!important; width: auto">ชื่อผู้ใช้</th>
+                                        <th class="sorting" onclick="updateSorting('jobTitle')" tabindex="0" aria-controls="zero_configuration_table" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 432px; padding: 25px; text-align: left!important; width: auto">ตำแหน่ง</th>
+                                        <th class="sorting_desc" onclick="updateSorting('role')" tabindex="0" aria-controls="zero_configuration_table" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 221px; padding: 25px; text-align: left!important; width: auto" aria-sort="descending">Role</th>
+                                        <th class="sorting_desc" onclick="updateSorting('qtyCustomer')" tabindex="0" aria-controls="zero_configuration_table" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 221px; padding: 25px; text-align: left!important; width: auto" aria-sort="descending">จำนวนลูกค้า</th>
+                                        <th class="sorting" onclick="updateSorting('isActive')" tabindex="0" aria-controls="zero_configuration_table" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 432px; padding: 25px; text-align: left!important; width: auto">สถานะ</th>
+                                        <th></th><th></th></tr>
+                                    </thead>
+                                    <tbody id="table">
+
+<!--                                    <tr role="row" class="odd" th:each="user: ${userList}" id="resultsBlock">-->
+<!--                                        <td style="text-align: left!important;" th:text="${user.name}"></td>-->
+<!--                                        </a>-->
+<!--                                        <td style="text-align: left!important;" th:text="${user.jobTitle}"></td>-->
+<!--                                        <td class="sorting_1" style="text-align: left!important;" th:text="${user.role}"></td>-->
+<!--                                        <td class="sorting_1" style="text-align: left!important;" th:text="${user.qtyCustomer}"></td>-->
+<!--                                        <td class="sorting_1" style="text-align: left!important;" th:if="${user.isActive()}" th:text="Active"></td>-->
+<!--                                        <td class="sorting_1" style="text-align: left!important;" th:if="${!user.isActive()}" th:text="Inactive"></td>-->
+<!--                                        <td class=""><a class="nav-item-hold" th:href="@{${'/users/' + user.id}}" >Edit</a></td>-->
+<!--                                        <td sec:authorize="hasAuthority('ADMIN')" class=""><a class="nav-item-hold"th:href="@{${'/users/delete/' + user.id}}">Delete</a></td>-->
+<!--                                        <td sec:authorize="!hasAuthority('ADMIN')" class=""><a class="nav-item-hold"th:href="@{${'/customers/user=' + user.id}}">Campaigns</a></td>-->
+<!--                                    </tr>-->
+                                    </tbody>
+                                </table></div></div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="zero_configuration_table_info" role="status" aria-live="polite" style="padding: 10px" th:text="${'Showing 1 to 10 of '+pages+' entries'}"></div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="zero_configuration_table_paginate"><ul class="pagination"><li class="paginate_button page-item next" id="zero_configuration_table_previous" th:onclick="pageBack()" ><a aria-controls="zero_configuration_table" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li><li th:each="i : ${#numbers.sequence(1, pages)}" class="paginate_button page-item"><a aria-controls="zero_configuration_table" data-dt-idx="1" tabindex="0" class="page-link" th:text="${i}" th:id="${i}" onclick="updatePage(this.id)" ></a></li><li class="paginate_button page-item next" id="zero_configuration_table_next"><a th:onclick="pageNext()" aria-controls="zero_configuration_table" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li></ul></div></div></div></div>
+                            </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    var keyword = "";
+    var page = 1;
+    var sorting = "name";
+    var ascending = true;
+    var entities = 10;
+    var maxPage = [[${pages}]];
+
+    function updateEntities(entities) {
+        this.entities = entities;
+        loadDoc();
+    }
+
+    function pageNext() {
+        if((page + 1) >= maxPage) {
+            page = maxPage;
+            updatePage(page);
+        }
+        else
+            updatePage(++page);
+    }
+
+    function pageBack() {
+        if((page - 1) <= 1) {
+            page = 1;
+            updatePage(page);
+        }
+        else
+            updatePage(--page);
+    }
+
+    function updatePage(page) {
+        this.page = page;
+        loadDoc();
+    }
+
+    function updateKeyword(keyword) {
+        this.keyword = keyword;
+        loadDoc();
+    }
+
+    function updateAscending(ascending) {
+        this.ascending = ascending;
+        loadDoc();
+    }
+
+    function updateSorting(sorting) {
+        this.sorting = sorting;
+        if(ascending == true)
+            updateAscending(false);
+        else
+            updateAscending(true);
+    }
+
+    function loadDoc() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("table").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/users/search?" + "entities=" + entities + "&page=" + page + "&sorting=" + sorting + "&ascending=" + ascending + "&keyword=" + keyword, true);
+        xhttp.send();
+    }
+</script>
+</body>
+</html>

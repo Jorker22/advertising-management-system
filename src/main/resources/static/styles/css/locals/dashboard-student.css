@@ -1,0 +1,68 @@
+.maincard-row[max-width~="500px"] > div {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 0 100%; }
+
+.subcard-row {
+  padding: 0 7px; }
+
+.subcard-row > div {
+  padding: 0 8px; }
+
+.subcard-row[max-width~="500px"] > div {
+  width: 50%;
+  max-width: 50%;
+  flex: 0 0 50%; }
+
+.attention-echart {
+  min-height: 400px; }
+
+.attention-echart #echart-attention {
+  width: 100%;
+  height: calc(100% - 100px);
+  position: absolute;
+  left: 0;
+  bottom: 0; }
+
+.schedule {
+  width: 100%; }
+
+.schedule,
+.schedule th,
+.schedule td {
+  font-weight: 300;
+  text-align: center; }
+
+.schedule thead tr span {
+  display: block; }
+
+.schedule thead tr span.date {
+  color: #a9a4ac;
+  font-size: 14px; }
+
+.schedule thead tr th.active {
+  border: 2px solid #ff9800;
+  background-color: #ffeed5; }
+
+.schedule thead tr th.active span.date {
+  color: #37323c; }
+
+.schedule tbody tr:nth-child(4n - 1),
+.schedule tbody tr:nth-child(4n) {
+  background-color: #fafafa; }
+
+.schedule th,
+.schedule td {
+  border: 1px solid #dee2e6;
+  height: 36px;
+  min-width: 120px; }
+
+.schedule th:not(:first-child),
+.schedule td:not(:first-child) {
+  width: 13%; }
+
+.schedule-card {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0; }
+
+/*# sourceMappingURL=dashboard-student.css.map */

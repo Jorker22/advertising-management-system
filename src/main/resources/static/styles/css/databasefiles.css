@@ -1,0 +1,228 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.58;
+    color: #333;
+    /*background-color: #f4f4f4;*/
+}
+
+body:before {
+    height: 50%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /*background: #128ff2;*/
+    content: "";
+    z-index: 0;
+}
+
+.clearfix:after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 1.7em;
+}
+
+a {
+    color: #128ff2;
+}
+
+button {
+    box-shadow: none;
+    border: 1px solid transparent;
+    font-size: 14px;
+    outline: none;
+    line-height: 100%;
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    min-height: 38px;
+}
+
+button.primary {
+    background-color: #128ff2;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+    color: #fff;
+}
+
+input {
+    font-size: 1rem;
+}
+
+input[type="file"] {
+    border: 1px solid #128ff2;
+    padding: 6px;
+    max-width: 100%;
+}
+
+.file-input {
+    width: 100%;
+}
+
+.submit-btn {
+    display: block;
+    margin-top: 15px;
+    min-width: 100px;
+}
+
+@media screen and (min-width: 500px) {
+    .file-input {
+        width: calc(100% - 115px);
+    }
+
+    .submit-btn {
+        display: inline-block;
+        margin-top: 0;
+        margin-left: 10px;
+    }
+}
+
+
+.upload-container {
+      max-width: 750px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #fff;
+      box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+      margin-top: 60px;
+      min-height: 400px;
+      position: relative;
+      padding: 20px;
+}
+
+.upload-header {
+    border-bottom: 1px solid #ececec;
+}
+
+.upload-header h2 {
+    font-weight: 500;
+}
+
+.single-upload {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.upload-response {
+    overflow-x: hidden;
+    word-break: break-all;
+}
+
+
+/* equal card height */
+.row-equal > div[class*='col-'] {
+    display: flex;
+    flex: 1 0 auto;
+}
+
+.row-equal .card {
+    width: 100%;
+}
+
+.checkboxCard{
+    border: 1px solid #5f6369;
+    border-radius: 5px;
+}
+
+
+
+.file-card {
+    margin:5px;
+}
+
+/*.whatever{*/
+/*    background-color: red;*/
+/*    !*display: inline-block;*!*/
+/*    !*width: 100px;*!*/
+/*    !*height: 100px;*!*/
+/*}*/
+
+/*#checkboxes input[type=checkbox]{*/
+/*    display: none;*/
+/*}*/
+
+/*#checkboxes input[type=checkbox]:checked + .whatever{*/
+/*    background-color: green;*/
+/*}*/
+/* #checkboxes input[type=checkbox]:checked + .checkboxCard {*/
+/*     background-color: #e7f0ff!important;*/
+/*     color:#1b5bd5!important;*/
+/* }*/
+
+
+/*.radio.selected{*/
+/*    background-color: #e7f0ff!important;*/
+/*    color:#1b5bd5!important;*/
+/*}*/
+
+.radio-group{
+    position: relative;
+}
+
+.radio{
+    display:inline-block;
+    /*!*width:15px;*!*/
+    /*!*height: 15px;*!*/
+    /*border-radius: 100%;*/
+    /*background-color:lightblue;*/
+    /*border: 2px solid lightblue;*/
+    cursor:pointer;
+    /*margin: 2px 0;*/
+}
+
+.radio.selected .checkboxCard {
+    background-color: #e7f0ff!important;
+    color:#1b5bd5!important;
+}
+
+.fileName {
+    -webkit-align-self: center;
+    align-self: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+    font-weight: 500;
+    /*overflow: hidden;*/
+    padding-right: 12px;
+    position: relative;
+    /*text-overflow: ellipsis;*/
+    white-space: nowrap;
+    width: -webkit-calc(100% - 56px);
+    width: calc(100% - 56px);
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.font-weight-500{
+    text-align: left!important;
+}
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

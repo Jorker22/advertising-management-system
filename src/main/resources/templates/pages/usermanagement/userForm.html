@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Form</title>
+    <style>
+        .table td{
+            border-top: 0px;
+        }
+        input{
+            padding: 3px 10px;
+        }
+        .label-error{
+            color: red!important;
+        }
+    </style>
+</head>
+<body layout:fragment="content">
+<div class="app-admin-wrap" style="min-height: 1000px;">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main-content-wrap sidenav-open d-flex flex-column" style="margin-top: 0px;">
+        <div class="breadcrumb breadcrumb-collapse"></div>
+        <div class="breadcrumb breadcrumb-collapse">
+            <h1>Create Customers</h1>
+            <a th:href="@{/campaigns}">
+                <button type="button" class='btn btn-outline-warning' style="border-radius: 40px; color:black; width: 100px; margin-right: 200px;">Cancel</button>
+            </a>
+            <button type="button" class='btn btn-warning btn-rounded' style="color:black; width: 180px;">Save</button>
+        </div>
+        <div class="separator-breadcrumb border-top"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="font-weight-500 text-20">สร้างโปรไฟล์ของคุณที่นี่</p>
+                <div class="row">
+                    <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+                        <div class="card-body" style="width: 95%; margin: auto;">
+                            <div id="loading-organization-top" class="loading-card">
+                          <span
+                                  class="spinner-glow spinner-glow-primary mr-5"
+                          ></span>
+                            </div>
+                            <form sec:authorize="hasAuthority('ADMIN')" th:object="${userForm}" th:action="@{${'/users/' + userForm.id}}" th:method="POST" >
+                                <table class="table top-items mb-0" style="width: 80%;">
+                                    <tbody>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="username">Username</label>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="username" th:field="*{username}">
+                                        <p class="label-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username Error</p>
+                                    </td>
+                                    </tr>
+                                    <tr th:if="${userForm.id.equals('000')}">
+                                        <td class="font-weight-500">
+                                            <label for="password">Password</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;"  id="password" th:field="*{password}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${userForm.id.equals('000')}">
+                                        <td class="font-weight-500">
+                                            <label for="confirmPassword">Confirm Password</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;"  id="confirmPassword" th:field="*{confirmPassword}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">confirmPassword Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="name">Full Name</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="name" th:field="*{name}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">name Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="jobTitle">Job Title</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="jobTitle" th:field="*{jobTitle}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('jobTitle')}" th:errors="*{jobTitle}">jobTitle Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="workPhone">Work Phone</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="workPhone" th:field="*{workPhone}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('workPhone')}" th:errors="*{workPhone}">workPhone Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="address">Address</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="address" th:field="*{address}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">address Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="city">City</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="city" th:field="*{city}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">city Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="province">State/Province</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="province" th:field="*{province}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('province')}" th:errors="*{province}">province Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="zipCode">ZIP/Postal Code</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="zipCode" th:field="*{zipCode}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('zipCode')}" th:errors="*{zipCode}">zipCode Error</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label>Role</label>
+                                        </td>
+                                        <td>
+                                            <select name="companyName" th:field="*{role}">
+                                                <option th:if="${!userForm.id.equals('000')}" th:text="${userForm.role}" th:value="${userForm.role}"></option>
+                                                <option th:value="ADMIN" th:text="Admin"></option>
+                                                <option th:value="MANAGER" th:text="Manager"></option>
+                                                <option th:value="USER" th:text="User"></option>
+                                                <option th:value="GUEST" th:text="Guest"></option>
+
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label>Company</label>
+                                        </td>
+                                        <td>
+                                            <select name="companyName" th:field="*{company}">
+                                                <option th:if="${userForm.id.equals('000')}" th:text="none" th:value="none"></option>
+                                                <option th:if="${!userForm.id.equals('000')}" th:text="${userForm.company}" th:value="${userForm.companyId}"></option>
+                                                <option th:each="customer : ${customerList}" th:value="${customer.id}" th:text="${customer.customerName}"></option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label>Active</label>
+                                        </td>
+                                        <td>
+                                            <select name="active" th:field="*{active}">
+                                                <option th:text="Active" th:value="true"></option>
+                                                <option th:text="Inactive" th:value="false"></option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <input type='submit' class='btn btn-warning btn-rounded m-1' style="width: 150px; margin: auto!important; margin-top: 50px!important; margin-bottom: 50px!important;">
+                            </form>
+
+                            <form sec:authorize="!hasAuthority('ADMIN')" th:object="${userForm}" th:action="@{${'/users/' + userForm.id}}" th:method="POST" >
+                                <table class="table top-items mb-0" style="width: 80%;">
+                                    <tbody>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="username">Username</label>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="username" th:field="*{username}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="name">Full Name</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="name" th:field="*{name}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="jobTitle">Job Title</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="jobTitle" th:field="*{jobTitle}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="workPhone">Work Phone</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="workPhone" th:field="*{workPhone}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="address">Address</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="address" th:field="*{address}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="city">City</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="city" th:field="*{city}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="province">State/Province</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="province" th:field="*{province}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label for="zipCode">ZIP/Postal Code</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="zipCode" th:field="*{zipCode}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label>Role</label>
+                                        </td>
+                                        <td>
+                                            <select name="companyName" th:field="*{role}">
+                                                <option th:if="${!userForm.id.equals('000')}" th:text="${userForm.role}" th:value="${userForm.role}"></option>
+                                                <option th:value="ADMIN" th:text="Admin"></option>
+                                                <option th:value="MANAGER" th:text="Manager"></option>
+                                                <option th:value="USER" th:text="User"></option>
+                                                <option th:value="GUEST" th:text="Guest"></option>
+
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="font-weight-500">
+                                            <label>Company</label>
+                                        </td>
+                                        <td>
+                                            <select name="companyName" th:field="*{company}">
+                                                <option th:if="${userForm.id.equals('000')}" th:text="none" th:value="none"></option>
+                                                <option th:if="${!userForm.id.equals('000')}" th:text="${userForm.company}" th:value="${userForm.companyId}"></option>
+                                                <option th:each="customer : ${customerList}" th:value="${customer.id}" th:text="${customer.customerName}"></option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <input type='submit' class='btn btn-warning btn-rounded m-1' style="width: 150px; margin: auto!important; margin-top: 50px!important; margin-bottom: 50px!important;">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // var roleList = [];
+    //
+    // function selectRole(checkBox) {
+    //     var output = document.getElementById("userRole");
+    //     if(checkBox.checked == true){
+    //         roleList.push(checkBox.value);
+    //     }
+    //     else{
+    //         roleList.splice(roleList.indexOf(checkBox.value),1);
+    //     }
+    //     output.value = roleList.join(",");
+    // }
+</script>
+</body>
+</html>

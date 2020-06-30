@@ -1,0 +1,51 @@
+@import "../variables";
+
+html,
+body {
+  margin: 0;
+}
+
+.wallpaper {
+  background: url("../../../images/Log-in-Graphic-04.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: calc(100% - 440px);
+  height: 100vh;
+  display: none;
+  z-index: -1;
+}
+
+.login-form-wrapper {
+  background: white;
+  width: 100%;
+  min-height: 100vh;
+  padding: 100px 50px;
+  float: right;
+  box-shadow: -4px 0px 20px 1px rgba(0, 0, 0, 0.06);
+}
+
+.login-form {
+  max-width: 440px;
+  margin: auto;
+}
+
+.login-form .logo {
+  display: block;
+}
+
+@media (min-width: 992px) {
+  .wallpaper {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .login-form-wrapper {
+    width: 440px;
+  }
+
+  .login-form .logo {
+    display: none;
+  }
+}

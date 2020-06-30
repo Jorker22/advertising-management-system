@@ -1,0 +1,15 @@
+<tbody id="table">
+<tr role="row" class="odd" th:each="campaign: ${campaignList}">
+    <td style="text-align: left!important;" th:text="${campaign.campaignName}"></td>
+    </a>
+    <td style="text-align: left!important;" th:text="${campaign.campaignType}"></td>
+    <td th:text="${campaign.qtyMessages}"></td>
+    <td th:text="${campaign.startDate}"></td>
+    <td th:text="${campaign.endDate}"></td>
+    <div sec:authorize="hasAuthority('USER')">
+        <td class=""><a class="nav-item-hold"th:href="@{${'/customers/' + customerId + '/campaigns/' + campaign.id}}">Edit</a></td>
+        <td class=""><a class="nav-item-hold"th:href="@{${'/customers/' + customerId + '/campaigns/delete/' + campaign.id}}">Delete</a></td>
+        <td class=""><a class="nav-item-hold"th:href="@{${'/customers/' + customerId + '/campaigns/' + campaign.id + '/broadcast/list'}}">Messages</a></td>
+    </div>
+</tr>
+</tbody>

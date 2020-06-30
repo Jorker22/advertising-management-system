@@ -1,0 +1,472 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<header>
+	<script src="https://d3js.org/d3.v4.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</header>
+<body>
+
+	<div th:if="${message}">
+		<h2 th:text="${message}"/>
+	</div>
+
+	<div>
+		<form method="POST" enctype="multipart/form-data" action="/upload">
+			<table>
+				<tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
+				<tr><td></td><td><input type="submit" value="Upload" /></td></tr>
+			</table>
+		</form>
+	</div>
+
+<!--	<div>-->
+<!--		<ul>-->
+<!--			<li th:each="file : ${files}">-->
+<!--				<a th:href="${file}" th:text="${file}" />-->
+<!--			</li>-->
+<!--		</ul>-->
+<!--	</div>-->
+
+
+	<div class="create-model">
+		<h4>KMeans Model</h4>
+
+		<form th:object="${ClusterForm}"  th:action=" @{${'/kMeansSubmit'}}" th:method="POST" enctype="multipart/form-data" >
+			<div class="select-dataset-box">
+				<h4>Select file.</h4>
+				<ul>
+					<li >
+						<div th:if="${fileNameModel}">
+							<th:block th:each="fileNameModeleach:${fileNameModel}">
+								<input type="checkbox" th:field="*{fileName}" th:value="${fileNameModeleach}"/>
+<!--								<a th:href="${file}" th:text="${fileNameModeleach}"/>-->
+								<span th:text="${fileNameModeleach}"></span>
+							</th:block>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<table>
+				<tr><td>Clusters:</td><td><input type="text" name="clusters" th:field="*{clusters}"/></td></tr>
+				<tr>
+					<td>distance:</td>
+					<td>
+						<select name="distances" th:field="*{distances}">
+							<option value="Euclidean">Euclidean</option>
+							<option value="Manhatten">Manhatten</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>iterations<td>
+					<td>
+						<td><input type="text" name="iterations" th:field="*{iterations}"/></td>
+					</td>
+				</td>
+				</tr>
+				<tr>
+					<td>
+						<select name="featureSelection" th:field="*{featureSelection}">
+							<option value="ICA">ICA</option>
+							<option value="PCA">PCA</option>
+							<option value="RP">RP</option>
+							<option value="CFS">CFS</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="submit" value="submit" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<span>X:</span>
+	<select id="XAxis">
+		<option th:each="n : ${listHeader}" th:value="${n}" th:text="${n}"/>
+	</select>
+
+	<span>Y:</span>
+	<select id="YAxis">
+		<option th:each="n : ${listHeader}" th:value="${n}" th:text="${n}"/>
+	</select>
+
+
+	<input type="hidden" th:value="${list}" id="data"/>
+	<div id="my_dataviz"></div>
+	<svg width="960" height="500"></svg>
+
+<!--	<script>-->
+
+<!--		// set the dimensions and margins of the graph-->
+<!--		var margin = {top: 10, right: 30, bottom: 30, left: 60},-->
+<!--				width = 720 - margin.left - margin.right,-->
+<!--				height = 480 - margin.top - margin.bottom;-->
+
+<!--		// append the svg object to the body of the page-->
+<!--		var svg = d3.select("#my_dataviz")-->
+<!--				.append("svg")-->
+<!--				.attr("width", width + margin.left + margin.right)-->
+<!--				.attr("height", height + margin.top + margin.bottom)-->
+<!--				.append("g")-->
+<!--				.attr("transform",-->
+<!--						"translate(" + margin.left + "," + margin.top + ")");-->
+
+<!--		// Read the data-->
+<!--		d3.csv("http://localhost:8080/files/PCA_CAR.csv", function(data) {-->
+
+<!--			// var data = document.getElementById("data").value;-->
+<!--			//-->
+<!--			// var data = JSON.parse(data);-->
+
+
+
+<!--			Object.size = function(obj) {-->
+<!--				var size = 0, key;-->
+<!--				for (key in obj) {-->
+<!--					if (obj.hasOwnProperty(key)) size++;-->
+<!--				}-->
+<!--				return size;-->
+<!--			};-->
+
+<!--			// function findMinMaxY(arr) {-->
+<!--			// 	let min = parseFloat(arr.pointY[0]), max = parseFloat(arr.pointY[0]);-->
+<!--			//-->
+<!--			// 	for (let i = 1, len=Object.size(arr); i < len; i++) {-->
+<!--			// 		let v = parseFloat(arr.pointY[i]);-->
+<!--			// 		console.log(v);-->
+<!--			// 		min = (v < min) ? v : min;-->
+<!--			// 		max = (v > max) ? v : max;-->
+<!--			// 	}-->
+<!--			//-->
+<!--			// 	return [min, max];-->
+<!--			// }-->
+<!--			//-->
+<!--			// function findMinMaxX(arr) {-->
+<!--			// 	let min = parseFloat(arr.pointX[0]), max = parseFloat(arr.pointX[0]);-->
+<!--			//-->
+<!--			// 	for (let i = 1, len=Object.size(arr); i < len; i++) {-->
+<!--			// 		let v = parseFloat(arr.pointX[i]);-->
+<!--			// 		min = (v < min) ? v : min;-->
+<!--			// 		max = (v > max) ? v : max;-->
+<!--			// 	}-->
+<!--			//-->
+<!--			// 	return [min, max];-->
+<!--			// }-->
+
+<!--			function findMinMaxY(arr) {-->
+<!--				let min = parseFloat(arr[0].pointY), max = parseFloat(arr[0].pointY);-->
+
+<!--				for (let i = 1, len=arr.length; i < len; i++) {-->
+<!--					let v = parseFloat(arr[i].pointY);-->
+<!--					min = (v < min) ? v : min;-->
+<!--					max = (v > max) ? v : max;-->
+<!--				}-->
+
+<!--				return [min, max];-->
+<!--			}-->
+
+<!--			function findMinMaxX(arr) {-->
+<!--				let min = parseFloat(arr[0].pointX), max = parseFloat(arr[0].pointX);-->
+
+<!--				for (let i = 1, len=arr.length; i < len; i++) {-->
+<!--					let v = parseFloat(arr[i].pointX);-->
+<!--					min = (v < min) ? v : min;-->
+<!--					max = (v > max) ? v : max;-->
+<!--				}-->
+
+<!--				return [min, max];-->
+<!--			}-->
+
+<!--			var minMaxPointY = findMinMaxY(data);-->
+<!--			var minMaxPointX = findMinMaxX(data);-->
+<!--			console.log(minMaxPointY);-->
+<!--			console.log(minMaxPointX);-->
+<!--			var x = d3.scaleLinear()-->
+<!--					.domain([minMaxPointX[0], minMaxPointX[1]])-->
+<!--					.range([ 0, width ]);-->
+<!--			var xAxis = svg.append("g")-->
+<!--					.attr("transform", "translate(0," + height + ")")-->
+<!--					.call(d3.axisBottom(x));-->
+
+<!--			// Add Y axis-->
+<!--			var y = d3.scaleLinear()-->
+<!--					.domain([minMaxPointY[0], minMaxPointY[1]])-->
+<!--					.range([ height, 0]);-->
+<!--			var yAxis = svg.append("g")-->
+<!--					.call(d3.axisLeft(y));-->
+
+<!--			// Add dots-->
+<!--			svg.append('g')-->
+<!--					.selectAll("dot")-->
+<!--					.data(data)-->
+<!--					.enter()-->
+<!--					.append("circle")-->
+<!--					.attr("cx",function(d) { return x(d.pointX); })-->
+<!--					.attr("cy",function(d) { return y(d.pointY); })-->
+<!--					.attr("r", 1.5)-->
+<!--					.style("fill", "#69b3a2" )-->
+<!--		})-->
+
+<!--	</script>-->
+
+
+	<script>
+		var xValue = d => d.sepalwidth;
+		const xLabel = 'pointX';
+		var yValue = d => d.sepallength;
+		const yLabel = 'pointY';
+		const colorValue = d => d.cluster;
+		const colorLabel = 'Cluster';
+		const margin = { left: 120, right: 300, top: 20, bottom: 120 };
+
+		const svg = d3.select('svg');
+		const width = svg.attr('width');
+		const height = svg.attr('height');
+		const innerWidth = width - margin.left - margin.right;
+		const innerHeight = height - margin.top - margin.bottom;
+
+		const g = svg.append('g')
+				.attr('transform', `translate(${margin.left},${margin.top})`);
+		const xAxisG = g.append('g')
+				.attr('transform', `translate(0, ${innerHeight})`);
+		const yAxisG = g.append('g');
+		const colorLegendG = g.append('g')
+				.attr('transform', `translate(${innerWidth + 60}, 150)`);
+
+		xAxisG.append('text')
+				.attr('class', 'axis-label')
+				.attr('x', innerWidth / 2)
+				.attr('y', 100)
+				.text(xLabel);
+
+		yAxisG.append('text')
+				.attr('class', 'axis-label')
+				.attr('x', -innerHeight / 2)
+				.attr('y', -60)
+				.attr('transform', `rotate(-90)`)
+				.style('text-anchor', 'middle')
+				.text(yLabel);
+
+		colorLegendG.append('text')
+				.attr('class', 'legend-label')
+				.attr('x', -30)
+				.attr('y', -40)
+				.text(colorLabel);
+
+		const xScale = d3.scaleLinear();
+		const yScale = d3.scaleLinear();
+		const colorScale = d3.scaleOrdinal()
+				.range(d3.schemeCategory10);
+
+		const xAxis = d3.axisBottom()
+				.scale(xScale)
+				.tickPadding(15)
+				.tickSize(-innerHeight);
+
+		const yAxis = d3.axisLeft()
+				.scale(yScale)
+				.ticks(5)
+				.tickPadding(15)
+				.tickSize(-innerWidth);
+
+		const colorLegend = d3.legendColor()
+				.scale(colorScale)
+				.shape('dot');
+
+		const row = d => {
+			d.petalLength = +d.petalLength;
+			d.petalWidth = +d.petalWidth;
+			d.sepalLength = +d.sepalLength;
+			d.sepalWidth = +d.sepalWidth;
+			return d;
+		};
+		var xHeader = document.getElementById("XAxis").value;
+		var yHeader = document.getElementById("YAxis").value;
+
+
+		d3.csv("http://localhost:8080/files/Iris_KMeans.csv", data => {
+			yValue = d => d[yHeader];
+			xValue = d => d[xHeader];
+			function findMinMaxY(arr, yHeader) {
+				let min = parseFloat(arr[0][yHeader]), max = parseFloat(arr[0][yHeader]);
+
+				for (let i = 1, len=arr.length; i < len; i++) {
+					let v = parseFloat(arr[i][yHeader]);
+					min = (v < min) ? v : min;
+					max = (v > max) ? v : max;
+				}
+
+				return [min, max];
+			}
+
+			function findMinMaxX(arr, xHeader) {
+				let min = parseFloat(arr[0][xHeader]), max = parseFloat(arr[0][xHeader]);
+
+				for (let i = 1, len=arr.length; i < len; i++) {
+					let v = parseFloat(arr[i][xHeader]);
+					min = (v < min) ? v : min;
+					max = (v > max) ? v : max;
+				}
+
+				return [min, max];
+			}
+
+			var minMaxPointY = findMinMaxY(data,yHeader);
+			var minMaxPointX = findMinMaxX(data,xHeader);
+
+			console.log(minMaxPointY);
+			console.log(minMaxPointX);
+
+			xScale
+					.domain([minMaxPointX[0], minMaxPointX[1]])
+					.range([0, innerWidth])
+					.nice();
+
+			yScale
+					.domain([minMaxPointY[0], minMaxPointY[1]])
+					.range([innerHeight, 0])
+					.nice();
+
+			g.selectAll('dot').data(data)
+					.enter().append('circle')
+					.attr('cx', d => xScale(xValue(d)))
+					.attr('cy', d => yScale(yValue(d)))
+					.attr('fill', d => colorScale(colorValue(d)))
+					.attr('fill-opacity', 0.6)
+					.attr('r', 8);
+
+			xAxisG.call(xAxis);
+			yAxisG.call(yAxis);
+			colorLegendG.call(colorLegend)
+					.selectAll('.cell text')
+					.attr('dy', '0.1em');
+
+			function XAxisUpdate() {
+				xHeader = this.value;
+				xValue = d => d[xHeader];
+				function findMinMaxY(arr, yHeader) {
+					let min = parseFloat(arr[0][yHeader]), max = parseFloat(arr[0][yHeader]);
+
+					for (let i = 1, len=arr.length; i < len; i++) {
+						let v = parseFloat(arr[i][yHeader]);
+						min = (v < min) ? v : min;
+						max = (v > max) ? v : max;
+					}
+
+					return [min, max];
+				}
+
+				function findMinMaxX(arr, xHeader) {
+					let min = parseFloat(arr[0][xHeader]), max = parseFloat(arr[0][xHeader]);
+
+					for (let i = 1, len=arr.length; i < len; i++) {
+						let v = parseFloat(arr[i][xHeader]);
+						min = (v < min) ? v : min;
+						max = (v > max) ? v : max;
+					}
+
+					return [min, max];
+				}
+				var minMaxPointY = findMinMaxY(data,yHeader);
+				var minMaxPointX = findMinMaxX(data,xHeader);
+
+				console.log(minMaxPointY);
+				console.log(minMaxPointX);
+				xScale
+						.domain([minMaxPointX[0], minMaxPointX[1]])
+						.range([0, innerWidth])
+						.nice();
+
+				yScale
+						.domain([minMaxPointY[0], minMaxPointY[1]])
+						.range([innerHeight, 0])
+						.nice();
+
+				g.selectAll('circle').data(data)
+						.attr('cx', d => xScale(xValue(d)))
+						.attr('cy', d => yScale(yValue(d)))
+						.attr('fill', d => colorScale(colorValue(d)))
+						.attr('fill-opacity', 0.6)
+						.attr('r', 8);
+
+				g.selectAll('dot').data(data)
+						.attr('fill', d => colorScale(colorValue(d)))
+						.attr('fill-opacity', 0.6)
+						.attr('r', 8);
+
+				xAxisG.call(xAxis);
+				yAxisG.call(yAxis);
+				colorLegendG.call(colorLegend)
+						.selectAll('.cell text')
+						.attr('dy', '0.1em');
+			}
+
+
+			function YAxisUpdate() {
+				yHeader = this.value;
+				yValue = d => d[yHeader];
+				function findMinMaxY(arr, yHeader) {
+					let min = parseFloat(arr[0][yHeader]), max = parseFloat(arr[0][yHeader]);
+					for (let i = 1, len=arr.length; i < len; i++) {
+						let v = parseFloat(arr[i][yHeader]);
+						min = (v < min) ? v : min;
+						max = (v > max) ? v : max;
+					}
+
+					return [min, max];
+				}
+
+				function findMinMaxX(arr, xHeader) {
+					let min = parseFloat(arr[0][xHeader]), max = parseFloat(arr[0][xHeader]);
+
+					for (let i = 1, len=arr.length; i < len; i++) {
+						let v = parseFloat(arr[i][xHeader]);
+						min = (v < min) ? v : min;
+						max = (v > max) ? v : max;
+					}
+
+					return [min, max];
+				}
+				var minMaxPointY = findMinMaxY(data,yHeader);
+				var minMaxPointX = findMinMaxX(data,xHeader);
+
+				console.log(minMaxPointY);
+				console.log(minMaxPointX);
+
+				xScale
+						.domain([minMaxPointX[0], minMaxPointX[1]])
+						.range([0, innerWidth])
+						.nice();
+
+				yScale
+						.domain([minMaxPointY[0], minMaxPointY[1]])
+						.range([innerHeight, 0])
+						.nice();
+
+				g.selectAll('circle').data(data)
+						.attr('cx', d => xScale(xValue(d)))
+						.attr('cy', d => yScale(yValue(d)))
+						.attr('fill', d => colorScale(colorValue(d)))
+						.attr('fill-opacity', 0.6)
+						.attr('r', 8);
+
+				g.selectAll('dot').data(data)
+						.attr('fill', d => colorScale(colorValue(d)))
+						.attr('fill-opacity', 0.6)
+						.attr('r', 8);
+
+				xAxisG.call(xAxis);
+				yAxisG.call(yAxis);
+				colorLegendG.call(colorLegend)
+						.selectAll('.cell text')
+						.attr('dy', '0.1em');
+			}
+
+			d3.select("#XAxis").on("change", XAxisUpdate );
+			d3.select("#YAxis").on("change", YAxisUpdate );
+		});
+	</script>
+</body>
+</html>

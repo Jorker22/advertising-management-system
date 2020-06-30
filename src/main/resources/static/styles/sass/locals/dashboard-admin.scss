@@ -1,0 +1,130 @@
+@import "../variables";
+
+// Timeline
+$exported: $primary;
+$paid: $primary-blue-soft;
+$edited: $primary-secondary;
+
+// Student
+$come: $primary-blue-soft;
+$come-border: $primary-blue;
+$late: #f0eaf6;
+$late-border: #7530a2;
+$absent: #fa998c;
+$absent-border: #e9523f;
+$default: white;
+$default-border: #bbbbbb;
+
+// การจ่ายเงิน
+$pay-today: #ffc400;
+$pay-week: $primary-blue;
+
+.text-exported {
+  color: $exported;
+}
+
+.text-paid {
+  color: $paid;
+}
+
+.text-edited {
+  color: $edited;
+}
+
+.text-pay-today {
+  color: $pay-today;
+}
+
+.text-pay-week {
+  color: $pay-week;
+}
+
+.color-list.color-list-exported {
+  background-color: $exported;
+}
+
+.color-list.color-list-paid {
+  background-color: $paid;
+}
+
+.color-list.color-list-edited {
+  background-color: $edited;
+}
+
+.subcard {
+  background: $default;
+  border: 1px solid $default-border;
+}
+
+.subcard [class^="i-"] {
+  color: $primary-gray;
+}
+
+.subcard.subcard-primary {
+  border-color: $primary;
+}
+
+.subcard.subcard-primary [class^="i-"] {
+  color: $primary;
+  font-size: 40px;
+}
+
+.subcard.subcard-primary .content p {
+  width: 100%;
+}
+
+.subcard.subcard-primary .content p.total-student {
+  line-height: 1;
+}
+
+.subcard.come {
+  background-color: $come;
+  border-color: $come-border;
+}
+
+.subcard.late {
+  background-color: $late;
+  border-color: $late-border;
+}
+
+.subcard.absent {
+  background-color: $absent;
+  border-color: $absent-border;
+}
+
+.table-tbody-responsive {
+  width: 100%;
+}
+.table-tbody-responsive thead th {
+  font-weight: 500;
+}
+
+.table-tbody-responsive tbody {
+  max-height: 300px;
+  border-top: 2px solid #e3e3e3;
+  border-bottom: 2px solid #e3e3e3;
+  display: block;
+  overflow-y: scroll;
+}
+
+.table-tbody-responsive thead,
+.table-tbody-responsive tbody tr {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+}
+
+.table-tbody-responsive th,
+.table-tbody-responsive td {
+  height: 50px;
+}
+
+.table-tbody-responsive th:first-child,
+.table-tbody-responsive td:first-child {
+  padding-left: 20px;
+}
+
+.top-items th,
+.top-items td {
+  border-top: none;
+}

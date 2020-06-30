@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/styles/css/themes/timeline.css}" href="../static/styles/vendor/timeline.css">
+
+    <style>
+        .table-responsive input{
+            width: auto!important;
+            height: auto!important;
+        }
+        th{
+            line-height: normal;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content">
+<div class="app-admin-wrap" style="min-height: 1000px;">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main-content-wrap sidenav-open d-flex flex-column">
+        <div class="breadcrumb breadcrumb-collapse">
+        </div>
+        <div class="breadcrumb breadcrumb-collapse">
+            <h1>Schools</h1>
+        </div>
+        <div style="margin-top:20px;" class="separator-breadcrumb border-top"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="font-weight-500 text-20">จัดการรายชื่อโรงเรียนได้ที่นี่</p>
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <div class="card text-left">
+                            <div ><div class="table-responsive">
+                                <table id="zero_configuration_table" class="display table table-striped table-bordered dataTable" style="width: 100%;" role="grid" aria-describedby="zero_configuration_table_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th class="sorting" th:onclick="updateSorting('customerName')" tabindex="0" aria-controls="zero_configuration_table" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style="width: 295px; padding: 25px; text-align: left!important; width: auto">ชื่อโรงเรียน</th>
+                                        <th class="sorting" th:onclick="updateSorting('qtyCampaigns')" tabindex="0" aria-controls="zero_configuration_table" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 123px; padding: 25px; text-align: left!important; width: auto">status</th>
+                                        <div sec:authorize="hasAuthority('USER')">
+                                            <th></th>
+                                        </div>
+                                        <th></th><th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="table">
+                                          <tr role="row" class="odd" th:each="school: ${schoolList}">
+                                                <td style="text-align: left!important;" th:text="${school.getSchoolName()}"></td>
+                                                </a>
+<!--                                                <td style="text-align: left!important;" th:text="${'รัฐบาล'}"></td>-->
+<!--                                                <td class="sorting_1" style="text-align: left!important;" th:text="${'เมืองทอง'}"></td>-->
+                                                <td th:if="${school.isActive()}" th:text="${'Active'}" style="color: forestgreen"></td>
+                                                <td th:if="${!school.isActive()}" th:text="${'Inactive'}" style="color: darkred"></td>
+                                                <div sec:authorize="hasAuthority('ADMIN')">
+                                                    <td th:if="${school.isActive()}">
+                                                        <select id="radioBox" name="companyName" th:onchange="'loadDoc(\'' + ${school.getId()} + '\')'">
+                                                            <option th:value="true">Active</option>
+                                                            <option th:value="false">Inactive</option>
+                                                        </select>
+                                                    </td>
+                                                    <td th:unless="${school.isActive()}">
+                                                        <select id="radioBox" name="companyName" th:onchange="'loadDoc(\'' + ${school.getId()} + '\')'">
+                                                            <option th:value="false">Inactive</option>
+                                                            <option th:value="true">Active</option>
+                                                        </select>
+                                                    </td>
+                                                </div>
+                                            </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+
+    function loadDoc(id) {
+        console.log(id)
+
+        var status = document.getElementById("radioBox").value;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                window.location.reload();
+            }
+        };
+        xhttp.open("GET", "/schools/search?schoolId=" + id + "&status=" + status , true);
+        xhttp.send();
+    }
+
+</script>
+
+</body>
+</html>

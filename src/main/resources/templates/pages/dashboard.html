@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/styles/css/themes/timeline.css}" href="../static/styles/vendor/timeline.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <style>
+        .table-responsive input{
+            width: auto!important;
+            height: auto!important;
+        }
+        th{
+            line-height: normal;
+            font-size: 16px;
+        }
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 400px;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content" onload="initChart()">
+<div class="app-admin-wrap" style="min-height: 1000px;">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main-content-wrap sidenav-open d-flex flex-column">
+        <div class="breadcrumb breadcrumb-collapse">
+        </div>
+        <div class="breadcrumb breadcrumb-collapse">
+            <h1>Dashboard</h1>
+        </div>
+        <div style="margin-top:20px;" class="separator-breadcrumb border-top"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <div class="card text-left">
+                            <div class="card-body">
+
+                                <div style="width: 100%; height: auto; justify-content: space-around; display: flex;">
+                                    <div style="width: 50%; height: auto; padding: 40px">
+                                        <table  class="display table table-striped table-bordered dataTable" style="width: 100%; background: #E1EBEE" role="grid" aria-describedby="zero_configuration_table_info">
+                                            <thead>
+                                            <tr role="row">
+                                                <th>Broadcast ของวันนี้</th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                        <table id="zero_configuration_table" class="display table table-striped table-bordered dataTable" style="width: 100%;" role="grid" aria-describedby="zero_configuration_table_info">
+                                            <thead>
+                                            <tr role="row">
+                                                <th>วันที่</th>
+                                                <th style="text-align: left!important;">แคมเปญ</th>
+                                                <th style="text-align: left!important;">ข้อความ</th>
+                                                <th>สถานะ</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="odd" th:each="message: ${messageList}">
+                                                <!--                            <td valign="top" colspan="7" class="dataTables_empty">Create a new broadcast, click “Create new” on the top right</td>-->
+                                                <td th:text="${message.getSendDate()}"></td>
+                                                <td th:text="${message.getCampaign().getCampaignName()}" style="text-align: left!important; padding: 18px 12px"></td>
+                                                <td th:text="${message.getMessageName()}" style="text-align: left!important; padding: 18px 12px"></td>
+                                                <td style="color: darkred" >กำลังดำเนินการ...</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style="width: 50%; height: auto; padding: 40px">
+                                        <table  class="display table table-striped table-bordered dataTable" style="width: 100%; background: #E1EBEE" role="grid" aria-describedby="zero_configuration_table_info">
+                                            <thead>
+                                            <tr role="row">
+                                                <th>Broadcast ล่าสุด</th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                        <table class="display table table-striped table-bordered dataTable" style="width: 100%;" role="grid" aria-describedby="zero_configuration_table_info">
+                                            <thead>
+                                            <tr role="row">
+                                                <th>วันที่</th>
+                                                <th style="text-align: left!important;">แคมเปญ</th>
+                                                <th style="text-align: left!important;">ข้อความ</th>
+                                                <th>สถานะ</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="odd" th:each="message: ${messageRecentList}">
+                                                <!--                            <td valign="top" colspan="7" class="dataTables_empty">Create a new broadcast, click “Create new” on the top right</td>-->
+                                                <td th:text="${message.getSendDate()}"></td>
+                                                <td th:text="${message.getCampaign().getCampaignName()}" style="text-align: left!important; padding: 18px 12px"></td>
+                                                <td th:text="${message.getMessageName()}" style="text-align: left!important; padding: 18px 12px"></td>
+                                                <td style="color: mediumseagreen" >ส่งแล้ว</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+<!--                                <div style="width: 100%; height: auto; justify-content: space-around; display: flex;">-->
+<!--                                    <div style="width: 100%; height: auto; padding: 40px;">-->
+<!--                                        <table  class="display table table-striped table-bordered dataTable" style="width: 100%; background: #E1EBEE" role="grid" aria-describedby="zero_configuration_table_info">-->
+<!--                                            <thead>-->
+<!--                                            <tr role="row">-->
+<!--                                                <th>ประวัติการส่งข้อความของ 30 วันที่ผ่านมา</th>-->
+<!--                                            </tr>-->
+<!--                                            </thead>-->
+<!--                                        </table>-->
+<!--                                        <canvas style="box-shadow: 0 4px 20px 1px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.08); border-radius: 10px; padding: 10px;" id="monthlyChart"></canvas>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+                                <div style="width: 100%; height: auto; justify-content: space-around; display: flex;">
+                                    <div style="width: 100%; height: auto; padding: 40px;">
+                                        <table  class="display table table-striped table-bordered dataTable" style="width: 100%; background: #E1EBEE" role="grid" aria-describedby="zero_configuration_table_info">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th>ประวัติการส่งข้อความที่ส่งแล้ว</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+
+                                        <div style="justify-content: center; width: 100%; display: flex; ">
+                                            <div style="justify-content: space-around; width: 150px; display: flex; padding: 10px">
+                                                <lable>Year</lable>
+                                                <select id="year" onchange="updateLineChart()">
+                                                    <option value="2019">2019</option>
+                                                    <option value="2020">2020</option>
+                                                    <option value="2021">2021</option>
+                                                    <option value="2020">2020</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                    <option value="2031">2031</option>
+                                                    <option value="2032">2032</option>
+                                                    <option value="2033">2033</option>
+                                                    <option value="2034">2034</option>
+                                                </select>
+                                            </div>
+
+                                            <div style="justify-content: space-around; width: 200px; display: flex; padding: 10px">
+                                                <lable>Month</lable>
+                                                <select id="month" onchange="updateLineChart()">
+                                                    <option value="audi">All month</option>
+                                                    <option value="01">January</option>
+                                                    <option value="02">February</option>
+                                                    <option value="03">March</option>
+                                                    <option value="04">April </option>
+                                                    <option value="05">May</option>
+                                                    <option value="06">June</option>
+                                                    <option value="07">July</option>
+                                                    <option value="08">August</option>
+                                                    <option value="09">September</option>
+                                                    <option value="10">October</option>
+                                                    <option value="11">November</option>
+                                                    <option value="12">December</option>
+                                                </select>
+                                            </div>
+
+                                            <button id="campaignBtn" onclick="modalShow()">Add campaign</button>
+
+                                        </div>
+                                        <canvas style="box-shadow: 0 4px 20px 1px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.08); border-radius: 10px; padding: 10px;" id="myChart1"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- The Modal -->
+                                <div id="campaignModal" class="modal">
+
+                                    <!-- Modal content -->
+                                    <div class="modal-content">
+                                        <span class="close">&times;</span>
+
+                                        <table class="display table table-striped table-bordered dataTable" style="width: 100%;" role="grid" aria-describedby="zero_configuration_table_info">
+                                            <thead>
+                                            <tr role="row">
+                                                <th>โปรดเลือกแคมเปญที่ต้องการแสดงผล</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody  id="campaignTable">
+                                            <tr><td><input onchange="searchCampaign(this.value)" type="text" class="form-control" placeholder="" ></td></tr>
+<!--                                            <tr class="odd" th:each="campaign: ${campaignList}">-->
+<!--&lt;!&ndash;                                                <td th:text="${campaign.getCampaignName()}" style="text-align: left!important; padding: 18px 12px"></td>&ndash;&gt;-->
+<!--                                                <td style="display: flex">-->
+<!--                                                    <div>-->
+<!--                                                        <input type="checkbox" onclick="addCampaign(this.value)" th:value="${campaign.getCampaignName()}" th:id="${campaign.getCampaignName()}">-->
+<!--                                                    </div>-->
+<!--                                                     <div>-->
+<!--                                                         <label style="padding-left: 20px;" th:text="${campaign.getCampaignName()}"></label>-->
+<!--                                                     </div>-->
+<!--                                                </td>-->
+<!--                                            </tr>-->
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</div>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+    var customerId = [[${customerId}]]
+    var lineChart;
+    var today = new Date();
+    document.write(today);
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = dd + '-' + mm + '-' + yyyy;
+
+    var campaigns = [];
+    var selectedCampaigns = [];
+
+    var modal = document.getElementById("campaignModal");
+    var btn = document.getElementById("campaignBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    function modalShow() {
+        modal.style.display = "block";
+        getCampaignTable();
+    }
+
+    function removeChildNodes(id) {
+        var table = document.getElementById(id);
+        var i;
+        var lenght = table.childElementCount;
+        for(i=1; i < lenght; i++){
+            table.removeChild(table.lastChild);
+        }
+    }
+
+    function searchCampaign(keyword) {
+        if(keyword == "")
+            getCampaignTable();
+        else {
+            var table = document.getElementById("campaignTable");
+            // table.innerHTML = "";
+            removeChildNodes("campaignTable");
+            var i;
+            for (i = 0; i < campaigns.length; i++) {
+                if (campaigns[i].toLowerCase().includes(keyword.toLowerCase())) {
+                    var div = document.createElement('tr');
+                    div.innerHTML = getCampaignRow(campaigns[i]);
+                    table.appendChild(div);
+                    if(selectedCampaigns.indexOf(campaigns[i]) != -1)
+                        document.getElementById(campaigns[i]).checked = true;
+                }
+            }
+        }
+    }
+
+    function getCampaignTable() {
+        var table = document.getElementById("campaignTable");
+        var i;
+        for(i=0; i < campaigns.length; i++){
+            var div = document.createElement('tr');
+            div.innerHTML = getCampaignRow(campaigns[i]);
+            table.appendChild(div);
+            if(selectedCampaigns.indexOf(campaigns[i]) != -1)
+                document.getElementById(campaigns[i]).checked = true;
+        }
+    }
+    function getCampaignRow(campaignName){
+        return "<tr class='odd'>"+
+        "<td style='display: flex'>"+
+            "<div>"+
+            "<input type='checkbox' onclick='addCampaign(\"" +campaignName + "\")' value='" + campaignName + "' id='" + campaignName + "'/>"+
+            "</div><div>"+
+            "<label style='padding-left: 20px;'>"+campaignName+"</label>"+
+            "</div> </td> </tr>";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function addCampaign(campaignName) {
+        var isChecked = document.getElementById(campaignName).checked;
+        if(isChecked)
+            selectedCampaigns.push(campaignName);
+        else {
+            var index = selectedCampaigns.indexOf(campaignName);
+            selectedCampaigns.splice (index, 1);
+        }
+        console.log(isChecked)
+        updateLineChart()
+    }
+
+    function initChart() {
+        console.log(today)
+        console.log(yyyy)
+        document.getElementById('year').value = yyyy;
+        document.getElementById('month').value = mm;
+        updateLineChart();
+    }
+    function updateLineChart() {
+        var year = document.getElementById('year').value;
+        var month = document.getElementById('month').value;
+        var date = month + "-" + year;
+        console.log(date);
+        // var customerId = 37;
+        loadDoc("Get", "/dashboard/getData?customerId=" + customerId + "&date=" + date, getLineChart);
+    }
+    function getLineChart(dataset){
+        var chart = {
+            type: 'line',
+            data: {
+                datasets: getTableGroup(dataset, getColorList(dataset.length)),
+                labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31], // วันที่
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'จำนวนข้อความที่ส่ง'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'วันที่ส่งข้อความ'
+                        }
+                    }]
+                }
+            }
+        }
+
+        var ctx1 = document.getElementById('myChart1').getContext('2d');
+        lineChart = new Chart(ctx1, chart);
+    }
+    function getTableGroup(dataset, colorset){
+        var tableGroup= [];
+        var dataList = JSON.parse(dataset);
+        campaigns = Object.keys(dataList);
+        if(selectedCampaigns.length > 0)
+            tableGroup.push(getHeader(dataList[selectedCampaigns[0]], colorset[0], selectedCampaigns[0]));
+        if(selectedCampaigns.length > 1){
+            var i;
+            for(i = 1; i < selectedCampaigns.length; i++){
+                tableGroup.push(getTable(dataList[selectedCampaigns[i]], colorset[i], selectedCampaigns[i]));
+            }
+        }
+        return tableGroup;
+    }
+    function getHeader(dataset, color, label){
+        return {
+            label: label,
+            fill: 'false',
+            lineTension: 0,
+            backgroundColor: color,
+            borderColor: color,
+            data: dataset
+        }
+    }
+    function getTable(dataset, color, label){
+        return {
+            type: 'line',
+            label: label,
+            fill: 'false',
+            lineTension: 0,
+            backgroundColor: color,
+            borderColor: color,
+            data: dataset
+        }
+    }
+    function getColorList(size) {
+        var colorList = [];
+        for(var i = 0; i <= size; i++){
+            colorList.push('rgb(' +Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')');
+        }
+        return colorList
+    }
+    function loadDoc(method, url, callback) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                callback(this.responseText);
+            }
+        };
+        xhttp.open(method, url);
+        xhttp.send();
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/styles/css/themes/timeline.css}" href="../static/styles/vendor/timeline.css">
+    <link rel="stylesheet" th:href="@{/styles/css/themes/flex-message.css}" href="../static/styles/vendor/flex-message.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+    <style>
+        .table-responsive input{
+            width: auto!important;
+            height: auto!important;
+        }
+        th{
+            line-height: normal;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content" onload="init()">
+
+<form  th:object="${MessageForm}" th:action=" @{${'/customers/' + customerId + '/campaigns/' + campaignId + '/broadcast/newBroadcast/save'}}" th:method="POST" id="myForm" >
+<div class="app-admin-wrap" style="min-height: 1000px;">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="main-content-wrap sidenav-open d-flex flex-column">
+        <div class="breadcrumb breadcrumb-collapse">
+        </div>
+        <div class="breadcrumb breadcrumb-collapse">
+            <h1>Create Messages</h1>
+            <button type="button" class='btn btn-outline-warning' style="border-radius: 40px; color:black; width: 100px;">Cancel</button>
+<!--            <button type="submit" class='btn btn-warning btn-rounded' style="color:black; width: 180px;">Save</button>-->
+
+            <button type="button" id="btnSubmit" class='btn btn-warning btn-rounded m-1' style="width: 150px; margin: auto!important; margin-top: 50px!important; margin-bottom: 50px!important;">Save</button>
+        </div>
+        <div style="margin-top:20px;" class="separator-breadcrumb border-top"></div>
+        <div class="row">
+
+            <!-- ยอดขายรายเดือน Start -->
+            <div class="col-sm-12">
+                <p class="font-weight-500 text-20">สร้างข้อความใหม่ของคุณที่นี่</p>
+                <!-- table start -->
+<!--                <table class="table top-items mb-0" style="width: 100%;">-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td class="font-weight-500">Title</td>-->
+<!--                        <td>-->
+<!--                            <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" >-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+
+                <div class="row" style="margin-bottom: 20px;">
+                    <div class="col-md-3">
+                       <span class="font-weight-500">Title</span>
+                    </div>
+                    <div class="col-md-3"`>
+                        <input type="text" th:field="*{message_name}" style="border-radius: 5px;border: 2px solid #DFE2E7; width: 100%;">
+                       <th:block th:if="${errorDuplicatedName}">
+
+                            <span style="color:red;" th:text="${errorDuplicatedName}"></span>
+                       </th:block>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 50px;">
+                    <div class="col-md-3">
+                        <span class="font-weight-500">Scheduling</span>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="radio radio-warning">
+                            <input type="radio" name="message_status" id="DraftRadio" value="0">
+                            <span>Draft</span>
+                            <span class="checkmark" id="Draft"></span>
+                        </label>
+                        <label class="radio radio-warning">
+                            <input type="radio" name="message_status" id="SendNowRadio" value="1">
+                            <span>Send Now</span>
+                            <span class="checkmark" id="SendNow"></span>
+                        </label>
+                        <label class="radio radio-warning">
+                            <input type="radio" name="message_status" id="DateRadio" value="2">
+                            <span></span>
+                            <span class="checkmark" id="DateSpan"></span>
+                        </label>
+
+                        <input type="date" id="dt"  onchange="mydate1();" style="border-radius: 5px; border: 2px solid #DFE2E7; margin-left: 25px; padding-left: 10px;"  />
+                        <input type="text" th:field="*{send_date}"  style="border-radius: 5px; border: 2px solid #DFE2E7; margin-left: 25px; padding-left: 10px;"  onclick="mydate();" hidden />
+                        <input  th:field="*{id}" style="border-radius: 5px; border: 2px solid #DFE2E7; margin-left: 25px; padding-left: 10px;" hidden />
+                        <input  id="messageRawJson" th:value="${messageRawJson}" style="border-radius: 5px; border: 2px solid #DFE2E7; margin-left: 25px; padding-left: 10px;" hidden />
+<!--                        <input  th:value="${customerId}" style="border-radius: 5px; border: 2px solid #DFE2E7; margin-left: 25px; padding-left: 10px;"  hidden />-->
+<!--                        <input type="button"  Value="Date" onclick="mydate();" />-->
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 50px;">
+                    <div class="col-md-3">
+                        <span class="font-weight-500">Tag:</span>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="hidden" th:field="*{tagId}"/>
+                        <div class="tag" style="height: 100%;visibility:hidden;"  id="tagDiv" ><span data-toggle="modal" >+</span><input type="hidden" name="tag[]" value="Brazil"> <a type="button"  role="button" class="tag-i"></a></div>
+                        <div class="tag" style="height: 100%;" data-toggle="modal" data-target="#addTagModel"><span data-toggle="modal" data-target="#addTagModel">+</span> Add<input type="hidden" name="tag[]" value="Brazil"><a type="button"  role="button" class="tag-i"></a></div>
+                    </div>
+                </div>
+
+                <!-- table end -->
+                <input type="hidden" th:field="*{messageJson}">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 25px;">
+
+                            <div class="card-header card-header-flexMessage">
+                                <span><b>Flex messages</b></span>
+                            </div>
+
+                            <div class="card-body" style="width: 100%; margin: auto;">
+<!--                                <div id="loading-organization-top" class="loading-card">-->
+<!--                                    <span-->
+<!--                                            class="spinner-glow spinner-glow-primary mr-5"-->
+<!--                                    ></span>-->
+
+<!--                                </div>-->
+
+                                <div class="bubbleMessage drop-down-flex-message dropdown mega-menu">
+
+
+                                    <div class="dropdown mega-menu d-none d-md-block show" id="dropdownDiv">
+
+                                        <a class="btn text-muted dropdown-toggle mr-3 " id="collapseBtn" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                                            <span class="bubble-nav-menu" id="bubbleNavMenu">Bubble message</span>
+                                        </a>
+                                        <i class="nav-icon i-Add" data-toggle="modal" data-target="#exampleModal" style="float:right;"></i>
+                                        <!-- <div class="collapse" id="collapseExample">
+                                          <div class="bubbleMessage-item">
+                                           Bubble message 1
+                                          </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+
+                            <div class="card-header card-header-flexMessage">
+                                <span><b>Hierarchy</b></span>
+                            </div>
+
+                            <div class="card-body" id="hierarchyDiv" style="width: 100%; margin: auto;height:650px!important;">
+
+                            </div>
+                        </div><!-- end card -->
+                        <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+
+                            <div class="card-header card-header-flexMessage">
+                                <span><b>Properties</b></span>
+                            </div>
+
+                            <!-- <div class='bubbleMessage drop-down-flex-message dropdown mega-menu' id='header'>
+                              <div class='dropdown open mega-menu d-none d-md-block show'>
+                                <div id='header-button'>
+                                  <a class='btn text-muted dropdown-toggle mr-3' data-toggle='collapse' style='width:0%!important;height:40px!important;' href='#textHeader' role='button' aria-expanded='false' aria-controls='textHeader'></a>Header</div>
+                                  <div class='collapse show' id='textHeader'>
+                                    <li class='header-item'>Text</li>
+                                  </div>
+                                </div>
+                              </div> -->
+
+                            <div class="card-body" id="propertiesBody" style="width: 100%; margin: auto;height:250px!important;">
+                                <!-- header-properties start-->
+                                <div class="header-properties">
+                                    <div class="Layout" id="Layout">
+                                        Layout
+                                        <div class="form-group">
+                                            <select class="form-control" id="layOutHeader">
+                                                <option>Horizontal</option>
+                                                <option>Vertical</option>
+                                                <option>Baseline</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="Flex">
+                                        Flex
+                                        <div class="form-group">
+                                            <select class="form-control" id="FlexHeader">
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="container">
+                                        <div class="row" id="spacingAndMargin">
+                                            <div class="col">
+                                                Spacing
+                                                <div class="form-group">
+                                                    <select class="form-control" id="SpacingHeader">
+                                                        <option>Default</option>
+                                                        <option>none</option>
+                                                        <option>xs</option>
+                                                        <option>sm</option>
+                                                        <option>md</option>
+                                                        <option>lg</option>
+                                                        <option>xl</option>
+                                                        <option>xxl</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                Margin
+                                                <div class="form-group">
+                                                    <select class="form-control" id="MarginHeader">
+                                                        <option>Default</option>
+                                                        <option>none</option>
+                                                        <option>xs</option>
+                                                        <option>sm</option>
+                                                        <option>md</option>
+                                                        <option>lg</option>
+                                                        <option>xl</option>
+                                                        <option>xxl</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="action" id="action">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Action
+                                                </div>
+                                                <div class="col">
+                                                    Enable <input type="checkbox" id="actionInput" onclick="checkBoxHeaderFunction()"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="actionDetail" id="actionDetailHeader">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Type</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <select class="form-control">
+                                                                <option>Message Action</option>
+                                                                <option>URI Action</option>
+                                                                <option>Postback Action</option>
+                                                                <option>Web App Action</option>
+                                                                <option>Datetime Picker Action</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Label </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="Label"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>URI </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="URI"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End header-properties -->
+                                <!-- Start Text properties -->
+                                <div class="text-properties">
+                                    <div class="text">
+                                        Text
+                                        <div class="form-group">
+
+                                            <input class="form-control" type="text" id="iptTextHeader" value="Header"/>
+
+                                        </div>
+                                    </div>
+                                    <div class="Flex">
+                                        Flex
+                                        <div class="form-group">
+                                            <select class="form-control" id="FlexTextHeader">
+                                                <option>Default</option>
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="sizeAndColor">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Size
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="sizeTextHeader">
+                                                            <option>Default</option>
+                                                            <option>xxs</option>
+                                                            <option>xs</option>
+                                                            <option>sm</option>
+                                                            <option>md</option>
+                                                            <option>lg</option>
+                                                            <option>xl</option>
+                                                            <option>xxl</option>
+                                                            <option>3xl</option>
+                                                            <option>4xl</option>
+                                                            <option>5xl</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    Color
+                                                    <div class="form-group">
+                                                        <input class="form-control" id="colorTextHeader" type="text" placeholder="#0000"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="weight">
+
+                                        <p>Weight</p>
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="regularBtnHeader" style="width:50%;">Regular</button>
+                                            <button type="button" class="btn btn-secondary" id="boldBtnHeader" style="width:50%;">Bold</button>
+                                        </div>
+
+                                    </div>
+                                    <div class="align">
+                                        <p>Align</p>
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="startBtnHeader" style="width:33.33%;">start</button>
+                                            <button type="button" class="btn btn-secondary" id="centerBtnHeader" style="width:33.33%;">center</button>
+                                            <button type="button" class="btn btn-secondary" id="endBtnHeader" style="width:33.33%;">end</button>
+                                        </div>
+                                    </div>
+                                    <div class="gravity">
+                                        gravity
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="topBtnHeader" style="width:33.33%;">top</button>
+                                            <button type="button" class="btn btn-secondary" id="centerBtnGravityHeader" style="width:33.33%;">center</button>
+                                            <button type="button" class="btn btn-secondary" id="bottomBtnHeader" style="width:33.33%;">bottom</button>
+                                        </div>
+                                    </div>
+                                    <div class="marginAndWrap">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Margin
+                                                    <div class="form-group">
+
+                                                        <select class="form-control" id="marginHeader">
+                                                            <option>Default</option>
+                                                            <option>none</option>
+                                                            <option>xs</option>
+                                                            <option>sm</option>
+                                                            <option>md</option>
+                                                            <optopn>lg</optopn>
+                                                            <option>xl</option>
+                                                            <option>xxl</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    Wrap
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="wrapHeader">
+                                                            <option>Default</option>
+                                                            <option>True</option>
+                                                            <option>False</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="action" id="action">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Action
+                                                </div>
+                                                <div class="col">
+                                                    Enable <input type="checkbox" id="actionInputAlign" onclick="checkBoxFunction()"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="actionDetail" id="actionDetail">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Type</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <select class="form-control">
+                                                                <option>Message Action</option>
+                                                                <option>URI Action</option>
+                                                                <option>Postback Action</option>
+                                                                <option>Web App Action</option>
+                                                                <option>Datetime Picker Action</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Label </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="Label"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>URI </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="URI"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- End Text properties   -->
+                                <!-- Hero-properties start-->
+                                <div class="hero-properties">
+                                    URI
+                                    <div class="form-group">
+                                        <input class="form-control" id="heroImgUrl" type="text" style="width:100%;" value="https://developers.line.biz/assets/images/services/bot-designer-icon.png"/>
+                                    </div>
+                                    <div class="flex">
+                                        Flex
+                                        <div class="form-group">
+                                            <select class="form-control" id="heroFlex">
+                                                <option>Default</option>
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="size">
+                                        Size
+                                        <div class="form-group">
+                                            <select class="form-control" id="heroSize">
+                                                <option>Default</option>
+                                                <option>xxs</option>
+                                                <option>xs</option>
+                                                <option>sm</option>
+                                                <option>md</option>
+                                                <option>lg</option>
+                                                <option>xl</option>
+                                                <option>xxl</option>
+                                                <option>3xl</option>
+                                                <option>4xl</option>
+                                                <option>5xl</option>
+                                                <option>full</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="align">
+                                        <p>Align</p>
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="leftHeroBtn" style="width:33.33%;">left</button>
+                                            <button type="button" class="btn btn-secondary" id="centerHeroBtn" style="width:33.33%;">center</button>
+                                            <button type="button" class="btn btn-secondary" id="rightHeroBtn" style="width:33.33%;">right</button>
+                                        </div>
+                                    </div>
+                                    <div class="gravity">
+                                        gravity
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="topHeroBtn" style="width:33.33%;">top</button>
+                                            <button type="button" class="btn btn-secondary" id="centerGravityHeroBtn" style="width:33.33%;">center</button>
+                                            <button type="button" class="btn btn-secondary" id="bottomHeroBtn" style="width:33.33%;">bottom</button>
+                                        </div>
+                                    </div>
+                                    <div class="Aspect">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Aspect ration
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="heroAspectRatio">
+                                                            <option>Default</option>
+                                                            <option>1:1</option>
+                                                            <option>1.51:1</option>
+                                                            <option>1.91:1</option>
+                                                            <option>4:3</option>
+                                                            <option>16:9</option>
+                                                            <option>20:13</option>
+                                                            <option>2:1</option>
+                                                            <option>3:1</option>
+                                                            <option>3:4</option>
+                                                            <option>9:16</option>
+                                                            <option>1:2</option>
+                                                            <option>1:3</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    Aspect mode
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="heroAspectMode">
+                                                            <option>Default</option>
+                                                            <option>Fit</option>
+                                                            <option>Cover</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="marginBackgroundColor">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Margin
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="marginHero">
+                                                            <option>Default</option>
+                                                            <option>none</option>
+                                                            <option>xs</option>
+                                                            <option>sm</option>
+                                                            <option>md</option>
+                                                            <option>lg</option>
+                                                            <option>xl</option>
+                                                            <option>xxl</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    Background color
+                                                    <div class="form-group">
+                                                        <input class="form-control" id="backgroundHero" type="text" placeholder="#0000"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="actionHero" id="actionHero">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Action
+                                                </div>
+                                                <div class="col" style="text-align: right;">
+
+                                                    Enable <input type="checkbox" id="actionInputHero" onclick="checkBoxHeroFunction()"/>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="actionDetailHero" id="actionDetailHero">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Type</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <select class="form-control">
+                                                                <option>Message Action</option>
+                                                                <option>URI Action</option>
+                                                                <option>Postback Action</option>
+                                                                <option>Web App Action</option>
+                                                                <option>Datetime Picker Action</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Label </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="Label"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>URI </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="URI"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end Hero-properties -->
+                                <!-- Body properties start-->
+                                <div class="body-properties">
+                                    <div class="BodyLayout" id="BodyLayout">
+                                        Layout
+                                        <div class="form-group">
+
+                                            <select class="form-control" id="bodyLayout">
+                                                <option>Horizontal</option>
+                                                <option>Vertical</option>
+                                                <option>Baseline</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="Flex" id="Flex">
+                                        Flex
+                                        <div class="form-group">
+                                            <select class="form-control" id="bodyFlex">
+                                                <option>Default</option>
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="container">
+                                        <div class="row" id="spacingAndMargin">
+                                            <div class="col">
+                                                Spacing
+                                                <div class="form-group">
+                                                    <select class="form-control" id="bodySpacing">
+                                                        <option>Default</option>
+                                                        <option>none</option>
+                                                        <option>xs</option>
+                                                        <option>sm</option>
+                                                        <option>md</option>
+                                                        <option>lg</option>
+                                                        <option>xl</option>
+                                                        <option>xxl</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                Margin
+                                                <div class="form-group">
+                                                    <select class="form-control" id="bodyMargin">
+                                                        <option>Default</option>
+                                                        <option>none</option>
+                                                        <option>xs</option>
+                                                        <option>sm</option>
+                                                        <option>md</option>
+                                                        <option>lg</option>
+                                                        <option>xl</option>
+                                                        <option>xxl</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="actionBody" id="actionBody">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Action
+                                                </div>
+                                                <div class="col" style="text-align: right;">
+                                                    Enable <input type="checkbox" id="actionInputBody" onclick="checkBoxBodyFunction()"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="actionDetail" id="actionDetailBody">
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Type</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <select class="form-control">
+                                                                <option>Message Action</option>
+                                                                <option>URI Action</option>
+                                                                <option>Postback Action</option>
+                                                                <option>Web App Action</option>
+                                                                <option>Datetime Picker Action</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Label </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="Label"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>URI </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="URI"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Body properties end-->
+                                <!-- Start Text-Body properties -->
+                                <div class="text-body-properties">
+                                    <div class="text">
+                                        Text
+                                        <div class="form-group">
+                                            <input class="form-control" id="bodyText" type="text"  value="Body"/>
+                                        </div>
+                                    </div>
+                                    <div class="Flex">
+                                        Flex
+                                        <div class="form-group">
+                                            <select class="form-control" id="bodyTextflex">
+                                                <option>Default</option>
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="sizeAndColor">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Size
+                                                    <div class="form-group">
+
+                                                        <select class="form-control" id="bodyTextSize">
+                                                            <option>Default</option>
+                                                            <option>xxs</option>
+                                                            <option>xs</option>
+                                                            <option>sm</option>
+                                                            <option>md</option>
+                                                            <option>lg</option>
+                                                            <option>xl</option>
+                                                            <option>xxl</option>
+                                                            <option>3xl</option>
+                                                            <option>4xl</option>
+                                                            <option>5xl</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    Color
+                                                    <div class="form-group">
+                                                        <input class="form-control" id="bodyTextColor" type="text" placeholder="#0000"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="weight">
+                                        Weight
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="bodyTextWeightRegular" style="width:50%;">Regular</button>
+                                            <button type="button" class="btn btn-secondary" id="bodyTextWeightBold" style="width:50%;">Bold</button>
+                                        </div>
+
+                                    </div>
+                                    <div class="align">
+                                        Align
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="bodyTextAlignleft" style="width:33.33%;">left</button>
+                                            <button type="button" class="btn btn-secondary" id="bodyTextAligncenter" style="width:33.33%;">center</button>
+                                            <button type="button" class="btn btn-secondary" id="bodyTextAlignright" style="width:33.33%;">right</button>
+                                        </div>
+                                    </div>
+                                    <div class="gravity">
+                                        gravity
+                                        <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-secondary" id="bodyTextGravityTop" style="width:33.33%;">top</button>
+                                            <button type="button" class="btn btn-secondary" id="bodytextGravityCenter" style="width:33.33%;">center</button>
+                                            <button type="button" class="btn btn-secondary" id="bodyTextGravityBottom" style="width:33.33%;">bottom</button>
+                                        </div>
+                                    </div>
+                                    <div class="marginAndWrap">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Margin
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="bodyTextMargin">
+                                                            <option>Default</option>
+                                                            <option>none</option>
+                                                            <option>xs</option>
+                                                            <option>sm</option>
+                                                            <option>md</option>
+                                                            <optopn>lg</optopn>
+                                                            <option>xl</option>
+                                                            <option>xxl</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    Wrap
+                                                    <div class="form-group">
+                                                        <select class="form-control" id="bodyTextWrap">
+                                                            <option>Default</option>
+                                                            <option>True</option>
+                                                            <option>False</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="action" id="action">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Action
+                                                </div>
+                                                <div class="col" style="text-align: right;">
+                                                    Enable <input type="checkbox" id="actionBodyTextInputAlign" onclick="checkBoxTextBodyFunction()"/>
+                                                </div>
+                                            </div>
+                                            <div class="actionDetail" id="actionDetailTextBody">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Type</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <select class="form-control">
+                                                                <option>Message Action</option>
+                                                                <option>URI Action</option>
+                                                                <option>Postback Action</option>
+                                                                <option>Web App Action</option>
+                                                                <option>Datetime Picker Action</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Label </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="Label"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>URI </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" placeholder="URI"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- End Text properties   -->
+                                <!-- Footer properties start-->
+                                <div class="footer-properties">
+                                    <div class="FooterLayout" id="FooterLayout">
+                                        Layout
+                                        <div class="form-group">
+                                            <select class="form-control" id="footerLayout">
+                                                <option value="horizontal">Horizontal</option>
+                                                <option value="vertical">Vertical</option>
+                                                <option value="baseline">Baseline</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="Flex" id="Flex">
+                                        Flex
+                                        <div class="form-group">
+                                            <select class="form-control" id="footerFlex">
+                                                <option>Default</option>
+                                                <option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="container">
+                                        <div class="row" id="spacingAndMargin">
+                                            <div class="col">
+                                                Spacing
+                                                <div class="form-group">
+                                                    <select class="form-control">
+                                                        <option>Default</option>
+                                                        <option>none</option>
+                                                        <option>xs</option>
+                                                        <option>sm</option>
+                                                        <option>md</option>
+                                                        <option>lg</option>
+                                                        <option>xl</option>
+                                                        <option>xxl</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col">
+                                                Margin
+                                                <div class="form-group">
+                                                    <select class="form-control">
+                                                        <option>Default</option>
+                                                        <option>none</option>
+                                                        <option>xs</option>
+                                                        <option>sm</option>
+                                                        <option>md</option>
+                                                        <option>lg</option>
+                                                        <option>xl</option>
+                                                        <option>xxl</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="actionBody" id="actionFooter">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Action
+                                                </div>
+                                                <div class="col">
+                                                    <div class="form-group" style="text-align: right;">
+                                                        Enable <input type="checkbox" id="actionInputFooter" onclick="checkBoxFooterFunction()"/>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="actionDetail" id="actionDetailFooter">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Type</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <select class="form-control">
+                                                                <option>Message Action</option>
+                                                                <option>URI Action</option>
+                                                                <option>Postback Action</option>
+                                                                <option>Web App Action</option>
+                                                                <option>Datetime Picker Action</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>Label </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" placeholder="Label"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span>URI </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" placeholder="URI"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Footer properties end -->
+                                <!-- Start Text-Footer properties -->
+                                <div class="text-footer-properties">
+                                    <div class="actionText" id="actionFooter">
+                                        <p>Action</p>
+                                        <div id="actionDetailFooter">
+
+                                            <div class="container">
+                                                <div class="row actionDetailFooterRow">
+                                                    <div class="col">
+                                                        <span>Type</span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <select class="form-control">
+                                                                <option>Message Action</option>
+                                                                <!-- <option>URI Action</option>
+                                                                <option>Postback Action</option>
+                                                                <option>Web App Action</option>
+                                                                <option>Datetime Picker Action</option> -->
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row actionDetailFooterRow">
+                                                    <div class="col">
+                                                        <span>Label </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input value="Button" class="form-control" id="footerButtonLabel" type="text" placeholder="Label"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row actionDetailFooterRow">
+                                                    <div class="col">
+                                                        <span>URI </span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <input  value="https://linecorp.com" id="footerButtonUrl" class="form-control" type="text" placeholder="URI"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="Flex">
+                                            Flex
+                                            <div class="form-group">
+                                                <select class="form-control" id="footerButtonFlex">
+                                                    <option>Default</option>
+                                                    <option>0</option>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                    <option>3</option>
+                                                    <option>4</option>
+                                                    <option>5</option>
+                                                    <option>6</option>
+                                                    <option>7</option>
+                                                    <option>8</option>
+                                                    <option>9</option>
+                                                    <option>10</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="marginHeight">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        Margin
+                                                        <div class="form-group">
+                                                            <select class="form-control" id="footerButtonMargin">
+                                                                <option>Default</option>
+                                                                <option>none</option>
+                                                                <option>xs</option>
+                                                                <option>sm</option>
+                                                                <option>md</option>
+                                                                <option>lg</option>
+                                                                <option>xl</option>
+                                                                <option>xxl</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col">
+                                                        Height
+                                                        <div class="form-group">
+                                                            <select class="form-control" id="footerButtonHeight">
+                                                                <option>Default</option>
+                                                                <option>sm</option>
+                                                                <option>md</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="styleAndColor">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        Style
+                                                        <div class="form-group">
+                                                            <select class="form-control" id="footerButtonSize">
+                                                                <option>Default</option>
+                                                                <option>Link</option>
+                                                                <option>Primary</option>
+                                                                <option>Secondary</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        Color
+                                                        <div class="form-group">
+                                                            <input class="form-control" id="footerButtonColor" type="text" placeholder="#0000"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="gravity">
+                                            Gravity
+                                            <div class="btn-group" style="width:100%;" role="group" aria-label="Basic example">
+                                                <button type="button" class="btn btn-secondary" id="footerButtonTop" style="width:33.33%;">top</button>
+                                                <button type="button" class="btn btn-secondary" id="footerButtonCenter" style="width:33.33%;">center</button>
+                                                <button type="button" class="btn btn-secondary" id="footerButtonBottom" style="width:33.33%;">bottom</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- End Text-Footer properties -->
+                            </div>
+                        </div><!-- end card -->
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+
+                            <div class="card-header card-header-flexMessage">
+                                <span><b>Preview</b></span>
+                            </div>
+                            <div class="card-body card-body-preview" style="width: 100%; margin: auto;height:650px!important;">
+                                <div class="message-preview" id="message-preview">
+                                    <div class="message-preview-header">
+                                        <span id="header-text">Header</span>
+                                    </div>
+                                    <div class="message-preview-hero">
+                                        <img id="imgHeroPreview" src="https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png"/>
+                                    </div>
+                                    <div class="message-preview-body">
+                                        <span id="body-text">body</span>
+                                    </div>
+                                    <div class="message-preview-footer">
+                                        <span id="footer-btn" class="preview-footer-btn">Button</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- end card -->
+
+                        <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+
+                            <div class="card-header card-header-flexMessage-Json">
+                                <span><b>JSON</b></span>
+                            </div>
+                            <div class="card-body card-body-Json" style="width: 100%; margin: auto;height:250px!important;">
+                                <pre></pre>
+                            </div>
+                        </div><!-- end card -->
+
+                    </div>
+                </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="text-align: center!important;">Flex message Templates</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="blank" id="blank-div">
+                    <div class="garally">
+                        <img th:src="@{/images/blank-pic.png}" src="assets/images/blank-pic.png" style="width: 100%;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="btn-create" data-dismiss="modal">Create</button>
+            </div>
+        </div>
+    </div>
+</div> <!-- end model -->
+
+
+
+<script th:src="@{/js/message.create.js}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+
+    function addTag(tagId){
+            var element = document.getElementById("tagDiv");
+            var tag = document.getElementById("tagId");
+            element.style.visibility='visible';
+            tag.value = tagId;
+            element.innerHTML = "tag id:"+tagId;
+    }
+
+    function init() {
+        var rawMessageJson = document.getElementById("messageRawJson").value;
+        var messageJson = JSON.parse(rawMessageJson);
+        var messageId = [[${MessageForm.getId()}]];
+        var messageStatus = [[${MessageForm.getMessage_status()}]];
+
+        if (messageId > 0) {
+            if(messageStatus == 0)
+                document.getElementById("DraftRadio").checked = true;
+            else if(messageStatus == 1) {
+                document.getElementById("SendNowRadio").checked = true;
+                alert("การแก้ไขข้อความที่ส่งแล้วจะไม่ส่งผลต่อข้อความที่เป้ามหายเคยได้รับ");
+            }
+            else if(messageStatus == 2) {
+                document.getElementById("DateRadio").checked = true;
+                document.getElementById("send_date").hidden = false;
+                document.getElementById("dt").hidden = true;
+            }
+
+            creatMessageBody();
+            // document.getElementById("messageId").value = messageJson.header.layout;
+
+            // console.log("Json Test Start");
+            // console.log(document.getElementById("messageJson").value);
+            // console.log(messageJson);
+            // console.log(messageJson.styles.header.backgroundColor);
+            // console.log(messageJson.direction);
+            // console.log(messageJson.hero.backgroundColor);
+            // console.log(messageJson.styles.hero.separator);
+            // console.log(messageJson.styles.hero.separatorColor);
+            // console.log(messageJson.styles.body.backgroundColor);
+            // console.log(messageJson.header.layout);
+            //
+            // console.log(messageJson.header.flex);
+            // console.log(messageJson.header.spacing);
+            // console.log(messageJson.header.margin);
+            // console.log(messageJson.header.contents[0].text);
+            // console.log(messageJson.header.contents[0].flex);
+            // console.log(messageJson.header.contents[0].size);
+            //
+            // console.log(messageJson.header.contents[0].color);
+            // console.log(messageJson.header.contents[0].weight);
+            // console.log(messageJson.header.contents[0].align);
+            // console.log(messageJson.header.contents[0].gravity);
+            // console.log(messageJson.header.contents[0].margin);
+            // console.log(messageJson.header.contents[0].wrap);
+            // console.log(messageJson.hero.url);
+            // console.log(messageJson.hero.flex);
+            //
+            // console.log(messageJson.hero.size);
+            // console.log(messageJson.hero.align);
+            // console.log(messageJson.hero.gravity);
+            // console.log(messageJson.hero.aspectRatio);
+            // console.log(messageJson.hero.aspectMode);
+            // console.log(messageJson.hero.margin);
+            // console.log(messageJson.hero.backgroundColor);
+            // console.log(messageJson.body.layout);
+            // console.log(messageJson.body.flex);
+            //
+            // console.log(messageJson.body.spacing);
+            // console.log(messageJson.body.margin);
+            // console.log(messageJson.body.contents[0].text);
+            // console.log(messageJson.body.contents[0].flex);
+            // console.log(messageJson.body.contents[0].size);
+            // console.log(messageJson.body.contents[0].color);
+            // console.log(messageJson.body.contents[0].weight);
+            // console.log(messageJson.body.contents[0].align);
+            //
+            // console.log(messageJson.body.contents[0].gravity);
+            // console.log(messageJson.body.contents[0].margin);
+            // console.log(messageJson.body.contents[0].wrap);
+            // console.log(messageJson.footer.layout);
+            // console.log(messageJson.footer.flex);
+            // console.log(messageJson.footer.contents[0].action.label);
+            // console.log("action uri: " + messageJson.footer.contents[0].action.uri);
+            // console.log(messageJson.footer.contents[0].flex);
+            // console.log("margin: " + messageJson.footer.contents[0].margin);
+            //
+            // console.log("height: " + messageJson.footer.contents[0]["height"]);
+            // console.log("style: " + messageJson.footer.contents[0]["style"]);
+            // console.log("color: " + messageJson.footer.contents[0]["color"]);
+            // console.log( messageJson.footer);
+            // console.log(messageJson.footer.contents[0].gravity);
+
+            // var messageBody = changJson(messageJson.styles.header.backgroundColor, messageJson.direction, messageJson.hero.backgroundColor, messageJson.styles.hero.separator, messageJson.styles.hero.separatorColor, messageJson.styles.body.backgroundColor, messageJson.header.layout, messageJson.header.flex, messageJson.header.spacing, messageJson.header.margin, messageJson.header.contents[0].text, messageJson.header.contents[0].flex, messageJson.header.contents[0].size, messageJson.header.contents[0].color, messageJson.header.contents[0].weight, messageJson.header.contents[0].align, messageJson.header.contents[0].gravity, messageJson.header.contents[0].margin, messageJson.header.contents[0].wrap, messageJson.hero.url, messageJson.hero.flex, messageJson.hero.size, messageJson.hero.align, messageJson.hero.gravity, messageJson.hero.aspectRatio, messageJson.hero.aspectMode, messageJson.hero.margin, messageJson.hero.backgroundColor, messageJson.body.layout, messageJson.body.flex, messageJson.body.spacing, messageJson.body.margin, messageJson.body.contents[0].text, messageJson.body.contents[0].flex, messageJson.body.contents[0].flex, messageJson.body.contents[0].size, messageJson.body.contents[0].color, messageJson.body.contents[0].weight, messageJson.body.contents[0].align, messageJson.body.contents[0].gravity, messageJson.body.contents[0].margin, messageJson.body.contents[0].margin, messageJson.body.contents[0].margin, messageJson.body.contents[0].wrap, messageJson.footer.layout, messageJson.footer.flex, messageJson.footer.contents[0].action.label, messageJson.footer.contents[0].action.uri, 0, 'none', 'sm', 'link', '#ffffff', 'top');
+            preview(rawMessageJson);
+            // console.log("Json Test End");
+        }
+    }
+</script>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="addTagModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTagModalLabel">Tags list</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!--                                <div style="height: 100%;"><span><input type="checkbox"/></span> Brazil</div>-->
+                <!--                                <div style="height: 100%;"><span><input type="checkbox"/></span> Brazil</div>-->
+                <!--                                <div style="height: 100%;"><span><input type="checkbox"/></span> Brazil</div>-->
+                <th:block th:each="tag:${tagList}">
+                    <!--                                    <div style="height: 100%;"><span><input type="radio" name="tag" th:value="${tag.id}"/></span> <span th:text="${tag.tagName}">Brazil</span></div>-->
+<!--                    <input type="checkbox" name="tag"  th:value="${tag.id}"/> <span th:text="${tag.tagName}">Brazil</span>-->
+                    <button type="button" class="tag" data-dismiss="modal" th:onclick="'javascript:addTag(\'' + ${tag.id} + '\');'" th:text="${tag.tagName}">Add</button>
+
+                </th:block>
+                <!--                                <th:block th:each="tag:${tagList}">-->
+                <!--                                    <div class="tag" style="height: 100%;" ><span th:text="${tag.tagName}" >+</span><input type="hidden" name="tag[]" value="Brazil"><a type="button" th:onclick="'javascript:addTag(\'' + ${tag.id} + '\');'" role="button" class="tag-i"></a></div>-->
+                <!--                                </th:block>-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div> <!-- end model -->
+
+</body>
+</html>

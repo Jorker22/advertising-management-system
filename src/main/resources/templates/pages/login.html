@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+
+
+    <style>
+
+        .label-error{
+            color: red!important;
+        }
+
+        body {
+            background-color: lightgrey;
+            color: #37323c;
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: .3px;
+            line-height: 1.6;
+            font-family: "Sarabun", sans-serif;
+            text-align: left;
+        }
+        .body-wrapper{
+            height: 100%;
+            weight: 100%;
+            display: -webkit-flex; /* Safari */
+            -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+            /*-webkit-align-items: flex-end;*/
+            /*-webkit-align-content: flex-end;*/
+        }
+
+
+        .login-form-wrapper{
+            background-color: #ffffff;
+            width: 100%;
+            min-height: 100vh;
+            padding: 100px 50px;
+            float: right;
+            box-shadow: -4px 0px 20px 1px rgba(0,0,0,0.6);
+            /*border: 1px solid #000000;*/
+            /*display: -webkit-flex; !* Safari *!*/
+            /*-webkit-flex-wrap: wrap; !* Safari 6.1+ *!*/
+            /*-webkit-align-items: center;*/
+            /*-webkit-align-content: center*/
+        }
+        .login-form {
+            max-width: 440px;
+            margin: auto;
+            display: -webkit-flex; /* Safari */
+            -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+            -webkit-align-items: center;
+            /*-webkit-align-content: center;*/
+        }
+        .login-input-wrapper{
+            position: relative;
+            width: 100%;
+            min-height: 1px;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-bottom: 10px;
+        }
+
+        .text-24{
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+    </style>
+    <link rel="stylesheet" th:href="@{/styles/css/main.css}" href="../static/styles/css/themes/login.css">
+</head>
+<body>
+    <div class="body-wrapper">
+        <div class="login-form-wrapper">
+            <div class="login-form">
+<!--                <img th:src="@{/images/logo-2.png}" src="./static/images/logo-2.png" style="width: 440px"; height="100px;">-->
+                <label class="text-24 login-input-wrapper">Log in to your account</label>
+                <!--/*@thymesVar id="userForm" type=""*/-->
+                <form class="login-form" action = "#" th:action = "@{/login}" th:object = "${userForm}" method = "POST">
+                    <div class="login-input-wrapper">
+                        <label class="text-24 " style="font-size: 16px;">Username</label>
+                        <input type="text" name="username" id="username">
+<!--                               placeholder="UserName" required="true" autofocus="true" style="width:100%" th:field="*{username}"/>-->
+<!--                        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</p>-->
+                    </div>
+                    <div class="login-input-wrapper">
+                        <label class="text-24" style="font-size: 16px;">Password</label>
+                        <input type="password" name="password">
+<!--                               placeholder="Password" required="true" style="width: 100%;" th:field="*{password}"/>-->
+                        <p class="label-error" th:if="${error}" th:text="${errormsg}">Password Error</p>
+                    </div>
+                    <div class="login-input-wrapper">
+                        <input type="submit" value="Submit" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

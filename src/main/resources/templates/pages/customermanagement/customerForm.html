@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Form</title>
+    <style>
+        .label-error{
+            color: red!important;
+        }
+        .table td{
+            border-top: 0px;
+        }
+        input{
+            padding: 3px 10px;
+        }
+    </style>
+</head>
+<body layout:fragment="content">
+<div class="app-admin-wrap" style="min-height: 1000px;">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main-content-wrap sidenav-open d-flex flex-column" style="margin-top: 0px;">
+        <div class="breadcrumb breadcrumb-collapse"></div>
+        <div class="breadcrumb breadcrumb-collapse">
+            <h1>Create Customers</h1>
+            <a th:href="@{/customers}">
+                <button type="button" class='btn btn-outline-warning' style="border-radius: 40px; color:black; width: 100px; margin-right: 200px;">Cancel</button>
+            </a>
+            <button sec:authorize="hasAuthority('USER')" type="button" class='btn btn-warning btn-rounded' style="color:black; width: 180px;">Save</button>
+        </div>
+        <div class="separator-breadcrumb border-top"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="font-weight-500 text-20">สร้างโปรไฟล์ของคุณที่นี่</p>
+                <div class="row">
+                    <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+                        <div class="card-body" style="width: 95%; margin: auto;">
+                            <div id="loading-organization-top" class="loading-card">
+                          <span
+                                  class="spinner-glow spinner-glow-primary mr-5"
+                          ></span>
+                            </div>
+                            <div sec:authorize="hasAuthority('USER')">
+                                <form th:object="${customerForm}" th:action="@{${'/customers/' + customerForm.id}}" th:method="POST" >
+                                    <table class="table top-items mb-0" style="width: 80%;">
+                                        <tbody>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="customerName">ขื่อบริษัท</label>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="customerName" th:field="*{customerName}">
+                                            <p class="label-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}">customerAddress Error</p>
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="customerType">ประเภทบริษัท</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;"  id="customerType" th:field="*{customerType}">
+                                                <p class="label-error" th:if="${#fields.hasErrors('customerType')}" th:errors="*{customerType}">customerType Error</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="customerAddress">ที่ตั้งบริษัท</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="customerAddress" th:field="*{customerAddress}">
+                                                <p class="label-error" th:if="${#fields.hasErrors('customerAddress')}" th:errors="*{customerAddress}">customerAddress Error</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="registrationDate">วันที่ทำสํญญา</label>
+                                            </td>
+                                            <td>
+                                                <input type="date" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="registrationDate" th:field="*{registrationDate}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="wage">มูลค่า</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="wage" th:field="*{wage}">
+                                                <p class="label-error" th:if="${#fields.hasErrors('wage')}" th:errors="*{wage}">Wage Error</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="comment">รายละเอียดเพิ่มเติม</label>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 165%;" id="comment" th:field="*{comment}">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <input type='submit' class='btn btn-warning btn-rounded m-1' style="width: 150px; margin: auto!important; margin-top: 50px!important; margin-bottom: 50px!important;">
+                                </form>
+                            </div>
+
+                            <div sec:authorize="!hasAuthority('USER')">
+                                <form th:object="${customerForm}" th:action="@{${'/customers/' + customerForm.id}}" th:method="POST" >
+                                    <table class="table top-items mb-0" style="width: 80%;">
+                                        <tbody>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="customerName">ขื่อบริษัท</label>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="customerName"  readonly th:field="*{customerName}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="customerType">ประเภทบริษัท</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;"  id="customerType" readonly th:field="*{customerType}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="customerAddress">ที่ตั้งบริษัท</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="customerAddress" readonly th:field="*{customerAddress}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="registrationDate">วันที่ทำสํญญา</label>
+                                            </td>
+                                            <td>
+                                                <input type="date" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="registrationDate" readonly th:field="*{registrationDate}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="wage">มูลค่า</label>
+                                            </td>
+                                            <td>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="wage" readonly th:field="*{wage}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-500">
+                                                <label for="comment">รายละเอียดเพิ่มเติม</label>
+                                                <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 165%;" id="comment" readonly th:field="*{comment}">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

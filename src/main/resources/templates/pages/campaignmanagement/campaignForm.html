@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Form</title>
+    <style>
+        .label-error{
+            color: red!important;
+        }
+        .table td{
+            border-top: 0px;
+        }
+        input{
+            padding: 3px 10px;
+        }
+    </style>
+</head>
+<body layout:fragment="content">
+<div class="main-content-wrap sidenav-open d-flex flex-column">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="breadcrumb breadcrumb-collapse"></div>
+    <div class="breadcrumb breadcrumb-collapse">
+        <h1>Create Campaign</h1>
+        <a th:href="@{/campaigns}">
+            <button type="button" class='btn btn-outline-warning' style="border-radius: 40px; color:black; width: 100px; margin-right: 200px;">Cancel</button>
+        </a>
+        <button sec:authorize="hasAuthority('USER')" type="button" class='btn btn-warning btn-rounded' style="color:black; width: 180px;">Save</button>
+    </div>
+    <div class="separator-breadcrumb border-top"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <p class="font-weight-500 text-20">สร้างแคมเปญของคุณที่นี่</p>
+            <div class="row">
+
+                <div class="card" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+                    <div class="card-body" style="width: 95%; margin: auto;">
+                        <div id="loading-organization-top" class="loading-card">
+                      <span
+                              class="spinner-glow spinner-glow-primary mr-5"
+                      ></span>
+                        </div>
+                        <form sec:authorize="hasAuthority('USER')" th:object="${campaignForm}" th:action=" @{${'/customers/' + customerId + '/campaigns/' + campaignForm.id}}" th:method="POST" >
+                            <table class="table top-items mb-0" style="width: 80%;">
+                                <tbody>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="customerName">ชื่อแคมเปญ</label>
+                                    <td>
+                                        <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="customerName" th:field="*{campaignName}">
+                                    <p class="label-error" th:if="${#fields.hasErrors('campaignName')}" th:errors="*{campaignName}">campaignName Error</p>
+                                </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="campaignType">ประเภทแคมเปญ</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;"  id="campaignType" th:field="*{campaignType}">
+                                        <p class="label-error" th:if="${#fields.hasErrors('campaignType')}" th:errors="*{campaignType}">campaignType Error</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="startDate">วันที่เริ่ม</label>
+                                    </td>
+                                    <td>
+                                        <input type="date" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="startDate" th:field="*{startDate}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="endDate">วันที่จบ</label>
+                                    </td>
+                                    <td>
+                                        <input type="date" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" id="endDate" th:field="*{endDate}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="comment">รายละเอียดเพิ่มเติม</label>
+                                        <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 165%;" id="comment" th:field="*{comment}">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <input type='submit' class='btn btn-warning btn-rounded m-1' style="width: 150px; margin: auto!important; margin-top: 50px!important; margin-bottom: 50px!important;">
+                        </form>
+
+                        <form sec:authorize="!hasAuthority('USER')" th:object="${campaignForm}" th:action=" @{${'/customers/' + customerId + '/campaigns/' + campaignForm.id}}" th:method="POST" >
+                            <table class="table top-items mb-0" style="width: 80%;">
+                                <tbody>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="customerName">ชื่อแคมเปญ</label>
+                                    <td>
+                                        <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" readonly id="customerName" th:field="*{campaignName}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="campaignType">ประเภทแคมเปญ</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" readonly id="campaignType" th:field="*{campaignType}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="startDate">วันที่เริ่ม</label>
+                                    </td>
+                                    <td>
+                                        <input type="date" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" readonly id="startDate" th:field="*{startDate}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="endDate">วันที่จบ</label>
+                                    </td>
+                                    <td>
+                                        <input type="date" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;" readonly id="endDate" th:field="*{endDate}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-500">
+                                        <label for="comment">รายละเอียดเพิ่มเติม</label>
+                                        <input type="text" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 165%;" readonly id="comment" th:field="*{comment}">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

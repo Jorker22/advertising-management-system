@@ -1,0 +1,11 @@
+line.bot:
+  channel-token: 'LEpq8gxB+z59AVQANU163hjfNpqf6DeXtvr24Dy/lr3mtS2ekor5/js7jMYs20MJGFrIdSDRf1meEsD28k7pp4hog9nCdutIO2ndpzj6ti51fE3yGZxcyUKLHCwmuPjLFou8tU9r9B4lvJD0nUuybQdB04t89/1O/w1cDnyilFU='
+  channel-secret: '839321c702d714f166dcf06179fb3067'
+  handler.path: /callback
+
+
+
+  spring.datasource:
+    url: jdbc:mysql://localhost:3306/advertisingDB?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: Jorker_22

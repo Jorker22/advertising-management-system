@@ -1,0 +1,14 @@
+<tbody>
+<tr class="odd" th:each="message: ${messageList}">
+    <!--                            <td valign="top" colspan="7" class="dataTables_empty">Create a new broadcast, click “Create new” on the top right</td>-->
+    <td style="text-align: center!important; padding: 18px 12px" th:text="${message.getMessage().getMessageName()}"></td>
+    <td style="text-align: center!important; padding: 18px 12px" th:text="${message.getMessage().getCampaign().getCampaignName()}"></td>
+    <td style="text-align: center!important; padding: 18px 12px" th:text="${message.getTag().getTagName()}"></td>
+    <td th:if="${message.getMessage().getMessageStatus() != 0}" style="text-align: center!important; padding: 18px 12px" th:text="${message.getMessage().getSendDate()}"></td>
+    <td th:if="${message.getMessage().getMessageStatus() == 0}" style="text-align: center!important; padding: 18px 12px" text="-"></td>
+    <td class=""><a class="nav-item-hold"th:href="@{${'/customers/' + customerId + '/campaigns/' + campaignId + '/broadcast/' + message.getMessage().id}}">Edit</a></td>
+    <td class=""><a class="nav-item-hold" th:href="@{${'/customers/' + customerId + '/campaigns/' + campaignId + '/broadcast/delete/' + message.getMessage().id}}">Delete</a></td>
+
+</tr>
+
+</tbody>

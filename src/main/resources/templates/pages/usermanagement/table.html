@@ -1,0 +1,23 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--</head>-->
+<!--<body>-->
+    <tbody>
+    <tr role="row" class="odd" th:each="user: ${userList}" id="resultsBlock">
+        <td style="text-align: left!important;" th:text="${user.name}"></td>
+        </a>
+        <td style="text-align: left!important;" th:text="${user.jobTitle}"></td>
+        <td class="sorting_1" style="text-align: left!important;" th:text="${user.role}"></td>
+        <td class="sorting_1" style="text-align: left!important;" th:text="${user.qtyCustomer}"></td>
+        <td class="sorting_1" style="text-align: left!important;" th:if="${user.isActive()}" th:text="Active"></td>
+        <td class="sorting_1" style="text-align: left!important;" th:if="${!user.isActive()}" th:text="Inactive"></td>
+        <td class=""><a class="nav-item-hold" th:href="@{${'/users/' + user.id}}" >Edit</a></td>
+        <td sec:authorize="hasAuthority('ADMIN')" class=""><a class="nav-item-hold"th:href="@{${'/users/delete/' + user.id}}">Delete</a></td>
+<!--        <td sec:authorize="!hasAuthority('ADMIN')" class=""><a class="nav-item-hold"th:href="@{${'/customers/' + user.id + '/campaigns'}}">Customer</a></td>-->
+        <td sec:authorize="!hasAuthority('ADMIN')" th:if="${user.role == 'USER'}" class=""><a class="nav-item-hold"th:href="@{${'/customers?userId=' + user.id}}">Customer</a></td>
+        <td sec:authorize="!hasAuthority('ADMIN')" th:if="${user.role != 'USER'}" class=""><a class="nav-item-hold"th:href="@{${'/customers?userId=' + user.id}}"></a></td>
+
+    </tr></tbody>
+<!--</body>-->
+<!--</html>-->

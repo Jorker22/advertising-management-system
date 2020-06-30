@@ -1,0 +1,106 @@
+.schoolName {
+    font-family: Sarabun;
+    font-size: 21px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    color: #405574;
+    margin-left:10px;
+    margin-bottom:0px;
+}
+
+.back {
+    font-family: Sarabun;
+    font-size: 21px;
+    font-weight: 300;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 0.62;
+    letter-spacing: 0.52px;
+    text-align: left;
+    color: #405574;
+    margin-bottom:11px!important;
+}
+
+.timeline-order {
+    width: 52px;
+    height: 52px;
+    box-shadow: 0 0 4px 0 rgba(255, 188, 52, 0.5);
+    border-radius: 100%;
+    border: solid 1px #ffbc34;
+    background-color: #ffffff;
+    text-align: center;
+
+}
+
+.order-number {
+    font-family: Sarabun;
+    font-size: 19px;
+    font-weight: 300;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.26;
+    letter-spacing: -0.06px;
+    text-align: center;
+    color: #405574;
+    margin-top:14px;
+    margin-bottom:10px;
+
+}
+
+.headerTimeline {
+    font-family: Sarabun;
+    font-size: 21px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    text-align: left!important;
+    color: #42484e;
+
+
+
+    padding-left:5px!important;
+}
+
+.timeline-order-header {
+    width:50px!important;
+    padding-bottom: 0px!important;
+}
+
+th, tr, td {
+    border:none!important;
+    text-align: left;
+}
+
+td {
+    padding-bottom: 0px;
+}
+
+div.vertical-line{
+    width: 2px; /* Line width */
+
+    background-color:  #f7f7f7; /* Line color */
+    height: 100%; /* Override in-line if you want specific height. */
+    display:inline-block; /* Causes the line to float to left of content.
+        You can instead use position:absolute or display:inline-block
+        if this fits better with your design */
+}
+
+.timeupdate {
+    font-family: Sarabun;
+    font-size: 19px;
+    font-weight: 300;
+    font-style: normal;
+    font-stretch: normal;
+    text-align: left;
+    color: #9fa9b9;
+}
+
+.table-responsive {
+    margin-left:40px!important;
+    margin-top:40px!important;
+}
+
+p {
+    margin-bottom: 0px;
+}

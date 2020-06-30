@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<!--=============== Left side Start ================-->
+<div class="side-content-wrap" th:fragment="sidebar">
+  <div class="sidebar-left open" data-perfect-scrollbar data-suppress-scroll-x="true" style="top: 0px">
+    <ul class="navigation-left">
+      <li class="nav-item">
+        <a class="nav-item-hold" href="#" style="padding:10px;text-align:left;">
+
+          <!--                <img th:src="@{/images/logo-2.png}" src="./assets/images/logo-2.png"/>-->
+          <div style="padding-left:10px;">
+            <div class="setting">
+              <img th:src="@{/images/user.png}" src="../static/images/user.png" style="margin-bottom:5px;margin-top:10px;margin-right:50px;width: 48px;
+                              height: 48px;"/>
+              <img th:src="@{/images/icons/settings.png}" src="../static/images/icons/settings.png" style="width:15px;margin-top:37px;margin-left:12px;"/>
+            </div>
+            <span class="nav-text">
+                          Hi, <span sec:authentication="name"></span>
+                           <br>
+              <!--                           <span class="nav-text-email">oatflower@gmail.com</span>-->
+                          </span>
+          </div>
+        </a>
+        <div class="triangle"></div>
+      </li>
+
+      <li class="nav-item" sec:authorize="hasAuthority('GUEST')">
+        <a class="nav-item-hold" th:href="@{/dashboard}">
+          <left><img th:src="@{/images/icons/graph.png}" src="../static/images/icons/graph.png" width="20px" style="margin-left:15px;margin-right:15px;"/></left>
+          <span class="nav-style">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item" sec:authorize="hasAuthority('USER') || hasAuthority('MANAGER')">
+        <a class="nav-item-hold" th:href="@{/customers}">
+          <left><img th:src="@{/images/icons/graph.png}" src="../static/images/icons/graph.png" width="20px" style="margin-left:15px;margin-right:15px;"/></left>
+          <span class="nav-style">Customer</span>
+        </a>
+      </li>
+
+      <li class="nav-item" sec:authorize="hasAuthority('GUEST')">
+        <a class="nav-item-hold" th:href="@{${'/customers/' + customerId + '/campaigns'}}">
+          <left><img th:src="@{/images/icons/graph.png}" src="../static/images/icons/graph.png" width="20px" style="margin-left:15px;margin-right:15px;"/></left>
+          <span class="nav-style">Campaign</span>
+        </a>
+      </li>
+
+      <li class="nav-item" sec:authorize="hasAuthority('ADMIN') || hasAuthority('MANAGER')">
+        <a class="nav-item-hold" th:href="@{/users}">
+          <left><img th:src="@{/images/icons/graph.png}" src="../static/images/icons/graph.png" width="20px" style="margin-left:15px;margin-right:15px;"/></left>
+          <span class="nav-style">User</span>
+        </a>
+      </li>
+
+      <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+        <a class="nav-item-hold" th:href="@{/schools}">
+          <left><img th:src="@{/images/icons/graph.png}" src="../static/images/icons/graph.png" width="20px" style="margin-left:15px;margin-right:15px;"/></left>
+          <span class="nav-style">School</span>
+        </a>
+      </li>
+
+
+      <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+        <a class="nav-item-hold" th:href="@{/datamining}">
+          <left><img th:src="@{/images/icons/graph.png}" src="../static/images/icons/graph.png" width="20px" style="margin-left:15px;margin-right:15px;"/></left>
+          <span class="nav-style">Data</span>
+        </a>
+      </li>
+
+<!--      <li class="nav-item main-nav" sec:authorize="hasAuthority('USER')"-->
+<!--          th:classappend="${#httpServletRequest.getRequestURI().contains('/customers') ? 'expand':''}">-->
+<!--        <a class="nav-item-hold">-->
+<!--          <i class="nav-icon i-Signal"></i>-->
+<!--          <span class="nav-style">Broadcast</span>-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="nav-item sub-nav" sec:authorize="hasAuthority('USER')">-->
+<!--        <ul>-->
+<!--          <li>-->
+<!--            <a class="nav-item-hold"  th:href="@{/broadcast/list}" th:classappend="${#httpServletRequest.getRequestURI().contains('/broadcast/list') ? 'active':''}">-->
+<!--              <span class="nav-style">Broadcast list</span>-->
+<!--            </a>-->
+<!--            <div class="triangle"></div>-->
+<!--          </li>-->
+<!--          <li>-->
+<!--            <a class="nav-item-hold" th:href="@{/broadcast/newBroadcast}" th:classappend="${#httpServletRequest.getRequestURI().contains('/broadcast/newBroadcast') ? 'active':''}">-->
+<!--              <span class="nav-style">New message</span>-->
+<!--            </a>-->
+<!--            <div class="triangle"></div>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </li>-->
+
+      <li class="nav-item">
+        <a class="nav-item-hold" th:href="@{'/logout'}">
+          <img th:src="@{/images/icons/logout.png}" src="../static/images/icons/logout.png" width="20px" style="margin-left:15px;margin-right:15px;"/>
+          <span class="nav-style" style="color:#9fa9b9!important;">Log out</span>
+        </a>
+      </li>
+
+
+    </ul>
+  </div>
+
+
+</div>
+<!--=============== Left side End ================-->
+</body>
+
+</html>

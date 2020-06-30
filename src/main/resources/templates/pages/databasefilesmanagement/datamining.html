@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{fragments/layout}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/styles/css/themes/timeline.css}" href="../static/styles/vendor/timeline.css">
+    <link rel="stylesheet" th:href="@{/styles/css/databasefiles.css}" href="../static//styles/css/databasefiles.css.css">
+<!--    <link rel="stylesheet" th:href="@{/styles/css/google .css}" href="../static//styles/css/google.css.css">-->
+
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
+<!--    <script type="text/javascript" src="https://cdn.datatables.net/1.10.8/js/jquery.dataTables.min.js"></script>-->
+        <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+
+    <style>
+        .table-responsive input{
+            width: auto!important;
+            height: auto!important;
+        }
+        th{
+            line-height: normal;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content">
+<div class="app-admin-wrap">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="main-content-wrap sidenav-open d-flex flex-column" style="margin-top: 0px;">
+        <div class="breadcrumb breadcrumb-collapse">
+        </div>
+        <div class="breadcrumb breadcrumb-collapse">
+            <h1>Data mining</h1>
+            <a sec:authorize="hasAuthority('USER')" th:href="@{/customers/create}">
+                <button type="button" class="btn btn-primary btn-rounded m-1" style="color:black;">Create New</button>
+            </a>
+        </div>
+        <div style="margin-top:20px;" class="separator-breadcrumb border-top"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p class="font-weight-500 text-20">จัดการข้อมูลของคุณได้ที่นี่</p>
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <div class="card text-left" style="width: 100%; max-width: 1000px; margin-bottom: 50px;">
+                            <div class="card-body" style="width: 95%; margin: auto;">
+
+<!--                                <div id="loading-organization-top" class="loading-card">-->
+<!--                                    <span class="spinner-glow spinner-glow-primary mr-5"></span>-->
+<!--                                </div>-->
+
+                                <div class="table-responsive">
+                                    <div class="col-sm-12" style="padding: 10px 25px 0px;">
+                                     <div class="upload-content">
+                                            <div class="single-upload">
+                                                <h3>Upload Single File</h3>
+                                                <form id="singleUploadForm" enctype="multipart/form-data"  th:action="@{${'/uploadFile'}}" th:method="POST" name="singleUploadForm">
+                                                    <input id="singleFileUploadInput" type="file" name="file" class="file-input" required />
+                                                    <button type="submit" class="primary submit-btn">Submit</button>
+                                                    <th:block th:if="${errorMessage}">
+                                                        <p style="color:red" th:text="${errorMessage}"></p>
+                                                    </th:block>
+                                                </form>
+                                            </div>
+                                     </div>
+                                    </div>
+                                </div>
+
+                                    <div class="col-sm-12 col-md-6">
+                                        <p>ไฟล์</p>
+                                    </div>
+
+                                    <div class="container">
+                               <form  id="fileUploadForm" th:object="${ClusterForm}"  th:action=" @{${'/kMeansSubmit'}}" th:method="POST" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="radio-group">
+                                    <th:block th:each="file:${dbFileList}">
+                                        <div class="radio" th:data-value="${file.fileName}">
+                                            <input type="radio" th:field="*{fileName}" th:value="${file.fileName}"/>
+                                        <label class="card checkboxCard file-card"  style="width:224px;height: 44px">
+                                            <div class="card-body" style="padding: 5px 5px 5px 5px;">
+
+                                                <div class="row" style="padding: 5px 5px 5px 5px!important;">
+                                                    <div class="col">
+<!--                                                        <svg x="0px" y="0px" class="svg-pic" focusable="false" viewBox="0 0 24 24" height="24px" width="24px" fill="#5f6368">-->
+<!--                                                            <g>-->
+<!--                                                                <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-5 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 8h-8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"></path>-->
+<!--                                                                <path d="M0 0h24v24H0z" fill="none"></path>-->
+<!--                                                            </g>-->
+<!--                                                        </svg>-->
+<!--                                                        <i class="fas fa-file"></i>-->
+                                                        <span class="fas fa-file"></span> <!-- using a <span> element to reference the icon -->
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="fileName" data-tooltip-align="b,c" data-tooltip-delay="500" data-tooltip-unhoverable="true" th:data-tooltip="${file.fileName}" th:aria-label="${file.fileName}" th:text="${file.fileName}">Test</div>
+<!--                                                        <div class="fileName" th:text="${file.fileName}" >Test</div>-->
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </label>
+                                        </div>
+                                    </th:block>
+
+
+
+                                        </div><!-- end radio group -->
+                                    </div>
+
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <h1>weka.clusters.SimpleKmeans</h1>
+                                                            <table class="table top-items mb-0" style="width: 80%;">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="font-weight-500">
+                                                                            <label for="clusters">numClusters:</label>
+                                                                        <td>
+                                                                        <input type="text" id="clusters" th:field="*{clusters}" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 50%;"/>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="font-weight-500">
+                                                                            <label for="distances">distanceFunction:</label>
+                                                                        <td>
+                                                                        <select name="distances" id="distances" th:field="*{distances}">
+                                                                            <option value="Euclidean">Euclidean</option>
+                                                                            <option value="Manhatten">Manhatten</option>
+                                                                        </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="font-weight-500">
+                                                                            <label for="iterations">maxIteration:</label>
+                                                                        </td>
+                                                                        <td>
+                                                                        <input type="text" id="iterations" th:field="*{iterations}" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 50%;"/>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="font-weight-500">
+                                                                            <label for="featureSelection">feature Selection:</label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <select id="featureSelection" name="featureSelection" th:field="*{featureSelection}">
+                                                                                <option value="ICA">ICA</option>
+                                                                                <option value="PCA">PCA</option>
+                                                                                <option value="RP">RP</option>
+                                                                                <option value="CFS">CFS</option>
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <input type='submit'  value="start" class='btn btn-warning btn-rounded m-1 center' style="width: 150px; margin: auto!important; margin-top: 50px!important; margin-bottom: 50px!important;">
+                                                        </div>
+                                                        <div class="col">
+                                                            <h1>Scatter Plot:</h1>
+
+                                                            <span>X:</span>
+                                                            <select id="XAxis">
+                                                                <option th:each="n : ${listHeader}" th:value="${n}" th:text="${n}"/>
+                                                            </select>
+
+                                                            <span>Y:</span>
+                                                            <select id="YAxis">
+                                                                <option th:each="n : ${listHeader}" th:value="${n}" th:text="${n}"/>
+                                                            </select>
+
+                                                            <br/>
+                                                            <svg width="858" height="480"></svg>
+
+                                                        </div>
+
+
+                                                    </div><!-- end row -->
+
+
+                                                </div>
+                                            </form>
+                                        <h1>Create Tag:</h1>
+                                        <form  id="tagForm" th:object="${TagForm}"  th:action=" @{${'/tag/save'}}" th:method="POST">
+                                            <table class="table top-items mb-0" style="width: 80%;">
+                                                <tbody>
+                                                <th:block th:if="${numClusters}">
+                                                    <tr>
+                                                        <th>Cluster</th>
+                                                        <th>tag Name</th>
+                                                        <th>tag Detail</th>
+                                                    </tr>
+                                                    <th:block th:each="i: ${#numbers.sequence(0, numClusters - 1)}">
+                                                        <tr>
+                                                            <td class="font-weight-500">
+                                                                <span th:text="${i}"></span>:
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" placeholder="tag name" id="tagName" th:field="*{tags[__${i}__].tagName}" style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;margin:5px;"/>
+
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" placeholder="tag detail" id="tagDetail"th:field="*{tags[__${i}__].tagDetail}"  style="border-radius: 5px; border: 2px solid #DFE2E7; width: 100%;margin:5px;"/>
+                                                            </td>
+                                                        </tr>
+
+                                                    </th:block>
+                                                </th:block>
+                                                </tbody>
+                                            </table>
+
+                                            <input type='submit'  value="create" class='btn btn-warning btn-rounded m-1 center' style="width: 150px; margin: auto!important; margin-top: 50px!important; margin-bottom: 50px!important;">
+                                        </form>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments/footer :: footer"></div>
+
+    </div>
+
+</div>
+
+
+
+
+<script th:src="@{/js/databasefiles.js}"></script>
+
+<script>
+    var xValue = d => d.sepalwidth;
+    const xLabel = 'pointX';
+    var yValue = d => d.sepallength;
+    const yLabel = 'pointY';
+    const colorValue = d => d.cluster;
+    const colorLabel = 'Cluster';
+    const margin = { left: 120, right: 300, top: 20, bottom: 120 };
+
+    const svg = d3.select('svg');
+    const width = svg.attr('width');
+    const height = svg.attr('height');
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    const g = svg.append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+    const xAxisG = g.append('g')
+        .attr('transform', `translate(0, ${innerHeight})`);
+    const yAxisG = g.append('g');
+    const colorLegendG = g.append('g')
+        .attr('transform', `translate(${innerWidth + 60}, 150)`);
+
+    xAxisG.append('text')
+        .attr('class', 'axis-label')
+        .attr('x', innerWidth / 2)
+        .attr('y', 100)
+        .text(xLabel);
+
+    yAxisG.append('text')
+        .attr('class', 'axis-label')
+        .attr('x', -innerHeight / 2)
+        .attr('y', -60)
+        .attr('transform', `rotate(-90)`)
+        .style('text-anchor', 'middle')
+        .text(yLabel);
+
+    colorLegendG.append('text')
+        .attr('class', 'legend-label')
+        .attr('x', -30)
+        .attr('y', -40)
+        .text(colorLabel);
+
+    const xScale = d3.scaleLinear();
+    const yScale = d3.scaleLinear();
+    const colorScale = d3.scaleOrdinal()
+        .range(d3.schemeCategory10);
+
+    const xAxis = d3.axisBottom()
+        .scale(xScale)
+        .tickPadding(15)
+        .tickSize(-innerHeight);
+
+    const yAxis = d3.axisLeft()
+        .scale(yScale)
+        .ticks(5)
+        .tickPadding(15)
+        .tickSize(-innerWidth);
+
+    const colorLegend = d3.legendColor()
+        .scale(colorScale)
+        .shape('dot');
+
+    const row = d => {
+        d.petalLength = +d.petalLength;
+        d.petalWidth = +d.petalWidth;
+        d.sepalLength = +d.sepalLength;
+        d.sepalWidth = +d.sepalWidth;
+        return d;
+    };
+    var xHeader = document.getElementById("XAxis").value;
+    var yHeader = document.getElementById("YAxis").value;
+
+
+    d3.csv("http://localhost:8080/files/Iris_KMeans.csv", data => {
+        yValue = d => d[yHeader];
+        xValue = d => d[xHeader];
+        // $('#data').val(data);
+        function findMinMaxY(arr, yHeader) {
+            let min = parseFloat(arr[0][yHeader]), max = parseFloat(arr[0][yHeader]);
+
+            for (let i = 1, len=arr.length; i < len; i++) {
+                let v = parseFloat(arr[i][yHeader]);
+                min = (v < min) ? v : min;
+                max = (v > max) ? v : max;
+            }
+
+            return [min, max];
+        }
+
+        function findMinMaxX(arr, xHeader) {
+            let min = parseFloat(arr[0][xHeader]), max = parseFloat(arr[0][xHeader]);
+
+            for (let i = 1, len=arr.length; i < len; i++) {
+                let v = parseFloat(arr[i][xHeader]);
+                min = (v < min) ? v : min;
+                max = (v > max) ? v : max;
+            }
+
+            return [min, max];
+        }
+
+        var minMaxPointY = findMinMaxY(data,yHeader);
+        var minMaxPointX = findMinMaxX(data,xHeader);
+
+        console.log(minMaxPointY);
+        console.log(minMaxPointX);
+
+        xScale
+            .domain([minMaxPointX[0], minMaxPointX[1]])
+            .range([0, innerWidth])
+            .nice();
+
+        yScale
+            .domain([minMaxPointY[0], minMaxPointY[1]])
+            .range([innerHeight, 0])
+            .nice();
+
+        g.selectAll('dot').data(data)
+            .enter().append('circle')
+            .attr('cx', d => xScale(xValue(d)))
+            .attr('cy', d => yScale(yValue(d)))
+            .attr('fill', d => colorScale(colorValue(d)))
+            .attr('fill-opacity', 0.6)
+            .attr('r', 8);
+
+        xAxisG.call(xAxis);
+        yAxisG.call(yAxis);
+        colorLegendG.call(colorLegend)
+            .selectAll('.cell text')
+            .attr('dy', '0.1em');
+
+        function XAxisUpdate() {
+            xHeader = this.value;
+            xValue = d => d[xHeader];
+            function findMinMaxY(arr, yHeader) {
+                let min = parseFloat(arr[0][yHeader]), max = parseFloat(arr[0][yHeader]);
+
+                for (let i = 1, len=arr.length; i < len; i++) {
+                    let v = parseFloat(arr[i][yHeader]);
+                    min = (v < min) ? v : min;
+                    max = (v > max) ? v : max;
+                }
+
+                return [min, max];
+            }
+
+            function findMinMaxX(arr, xHeader) {
+                let min = parseFloat(arr[0][xHeader]), max = parseFloat(arr[0][xHeader]);
+
+                for (let i = 1, len=arr.length; i < len; i++) {
+                    let v = parseFloat(arr[i][xHeader]);
+                    min = (v < min) ? v : min;
+                    max = (v > max) ? v : max;
+                }
+
+                return [min, max];
+            }
+            var minMaxPointY = findMinMaxY(data,yHeader);
+            var minMaxPointX = findMinMaxX(data,xHeader);
+
+            console.log(minMaxPointY);
+            console.log(minMaxPointX);
+            xScale
+                .domain([minMaxPointX[0], minMaxPointX[1]])
+                .range([0, innerWidth])
+                .nice();
+
+            yScale
+                .domain([minMaxPointY[0], minMaxPointY[1]])
+                .range([innerHeight, 0])
+                .nice();
+
+            g.selectAll('circle').data(data)
+                .attr('cx', d => xScale(xValue(d)))
+                .attr('cy', d => yScale(yValue(d)))
+                .attr('fill', d => colorScale(colorValue(d)))
+                .attr('fill-opacity', 0.6)
+                .attr('r', 8);
+
+            g.selectAll('dot').data(data)
+                .attr('fill', d => colorScale(colorValue(d)))
+                .attr('fill-opacity', 0.6)
+                .attr('r', 8);
+
+            xAxisG.call(xAxis);
+            yAxisG.call(yAxis);
+            colorLegendG.call(colorLegend)
+                .selectAll('.cell text')
+                .attr('dy', '0.1em');
+        }
+
+
+        function YAxisUpdate() {
+            yHeader = this.value;
+            yValue = d => d[yHeader];
+            function findMinMaxY(arr, yHeader) {
+                let min = parseFloat(arr[0][yHeader]), max = parseFloat(arr[0][yHeader]);
+                for (let i = 1, len=arr.length; i < len; i++) {
+                    let v = parseFloat(arr[i][yHeader]);
+                    min = (v < min) ? v : min;
+                    max = (v > max) ? v : max;
+                }
+
+                return [min, max];
+            }
+
+            function findMinMaxX(arr, xHeader) {
+                let min = parseFloat(arr[0][xHeader]), max = parseFloat(arr[0][xHeader]);
+
+                for (let i = 1, len=arr.length; i < len; i++) {
+                    let v = parseFloat(arr[i][xHeader]);
+                    min = (v < min) ? v : min;
+                    max = (v > max) ? v : max;
+                }
+
+                return [min, max];
+            }
+            var minMaxPointY = findMinMaxY(data,yHeader);
+            var minMaxPointX = findMinMaxX(data,xHeader);
+
+            console.log(minMaxPointY);
+            console.log(minMaxPointX);
+
+            xScale
+                .domain([minMaxPointX[0], minMaxPointX[1]])
+                .range([0, innerWidth])
+                .nice();
+
+            yScale
+                .domain([minMaxPointY[0], minMaxPointY[1]])
+                .range([innerHeight, 0])
+                .nice();
+
+            g.selectAll('circle').data(data)
+                .attr('cx', d => xScale(xValue(d)))
+                .attr('cy', d => yScale(yValue(d)))
+                .attr('fill', d => colorScale(colorValue(d)))
+                .attr('fill-opacity', 0.6)
+                .attr('r', 8);
+
+            g.selectAll('dot').data(data)
+                .attr('fill', d => colorScale(colorValue(d)))
+                .attr('fill-opacity', 0.6)
+                .attr('r', 8);
+
+            xAxisG.call(xAxis);
+            yAxisG.call(yAxis);
+            colorLegendG.call(colorLegend)
+                .selectAll('.cell text')
+                .attr('dy', '0.1em');
+        }
+
+        d3.select("#XAxis").on("change", XAxisUpdate );
+        d3.select("#YAxis").on("change", YAxisUpdate );
+    });
+</script>
+</body>
+</html>
+
+
+
+

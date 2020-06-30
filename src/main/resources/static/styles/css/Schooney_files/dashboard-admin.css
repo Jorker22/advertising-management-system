@@ -1,0 +1,88 @@
+.text-exported {
+  color: #ff9800; }
+
+.text-paid {
+  color: #afdedf; }
+
+.text-edited {
+  color: #6c389c; }
+
+.text-pay-today {
+  color: #ffc400; }
+
+.text-pay-week {
+  color: #58bdbe; }
+
+.color-list.color-list-exported {
+  background-color: #ff9800; }
+
+.color-list.color-list-paid {
+  background-color: #afdedf; }
+
+.color-list.color-list-edited {
+  background-color: #6c389c; }
+
+.subcard {
+  background: white;
+  border: 1px solid #bbbbbb; }
+
+.subcard [class^="i-"] {
+  color: #37323c; }
+
+.subcard.subcard-primary {
+  border-color: #ff9800; }
+
+.subcard.subcard-primary [class^="i-"] {
+  color: #ff9800;
+  font-size: 40px; }
+
+.subcard.subcard-primary .content p {
+  width: 100%; }
+
+.subcard.subcard-primary .content p.total-student {
+  line-height: 1; }
+
+.subcard.come {
+  background-color: #afdedf;
+  border-color: #58bdbe; }
+
+.subcard.late {
+  background-color: #f0eaf6;
+  border-color: #7530a2; }
+
+.subcard.absent {
+  background-color: #fa998c;
+  border-color: #e9523f; }
+
+.table-tbody-responsive {
+  width: 100%; }
+
+.table-tbody-responsive thead th {
+  font-weight: 500; }
+
+.table-tbody-responsive tbody {
+  max-height: 300px;
+  border-top: 2px solid #e3e3e3;
+  border-bottom: 2px solid #e3e3e3;
+  display: block;
+  overflow-y: scroll; }
+
+.table-tbody-responsive thead,
+.table-tbody-responsive tbody tr {
+  width: 100%;
+  display: table;
+  table-layout: fixed; }
+
+.table-tbody-responsive th,
+.table-tbody-responsive td {
+  height: 50px; }
+
+.table-tbody-responsive th:first-child,
+.table-tbody-responsive td:first-child {
+  padding-left: 20px; }
+
+.top-items th,
+.top-items td {
+  border-top: none; }
+
+/*# sourceMappingURL=dashboard-admin.css.map */

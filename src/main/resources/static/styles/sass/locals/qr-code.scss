@@ -1,0 +1,82 @@
+@import "../variables";
+
+.qr-code {
+  width: 210;
+  height: 210;
+  margin: 50px auto;
+}
+
+.bg-primary {
+  color: $primary-color;
+  border-radius: 10px;
+  padding: 7px 15px;
+}
+
+.bg-primary h1 {
+  color: $primary-color;
+}
+
+.main-header-mobile {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .app-footer,
+  .main-header:not(.main-header-mobile) {
+    display: none;
+  }
+
+  .main-header-mobile {
+    background: $primary;
+    height: auto;
+    box-shadow: none;
+    position: relative;
+    display: block;
+    z-index: 0;
+  }
+
+  .main-header-mobile img {
+    height: 38px;
+    margin: auto;
+  }
+
+  .main-header-mobile .close-button {
+    color: $primary-color;
+    font-size: 20px;
+    margin-right: 0;
+    position: absolute;
+    top: 3px;
+    right: 5px;
+  }
+
+  .sidebar-left {
+    top: 0;
+    height: 100vh;
+  }
+
+  .sidebar-overlay {
+    top: 0;
+  }
+
+  .main-content-wrap {
+    padding: 0;
+    padding-bottom: 1.25rem;
+    margin-top: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .topic {
+    font-size: 28px;
+  }
+
+  .bg-primary {
+    border-radius: 0;
+  }
+
+  .line-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+}
